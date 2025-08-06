@@ -1,11 +1,11 @@
 ---
-title: "Project Title"
-subtitle: "INFO 523 - Final Project"
+title: "Acoustic Emotion Classification"
+subtitle: "Optimizing Performance Through Ensemble Methods"
 author: 
-  - name: "Team name - Team member 1, Team member 2,..."
+  - name: "Ralp Andrade"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "Project description"
+description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
 format:
    html:
     code-tools: true
