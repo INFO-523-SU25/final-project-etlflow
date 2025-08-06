@@ -1,6 +1,385 @@
-# project-final
+---
+title: "Acoustic Emotion Classification"
+subtitle: "Optimizing Performance Through Ensemble Methods"
+author: 
+  - name: "Ralph Andrade"
+    affiliations:
+      - name: "College of Information Science, University of Arizona"
+description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: true
+    embed-resources: true
+editor: visual
+code-annotations: hover
+execute:
+  warning: false
+jupyter: python3
+---
 
-Final project repo for INFO 523 - Summer 2025.
+## Project Overview
 
-#### Disclosure:
-Derived from the original data viz course by Mine Çetinkaya-Rundel @ Duke University
+This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions—happy, sad, angry, and fear—through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
+
+The project addresses two fundamental questions in acoustic emotion recognition: first, whether traditional machine learning algorithms can accurately classify emotions using engineered audio features, and second, how ensemble methods can significantly improve classification performance compared to individual models. This investigation contributes to the growing field of effective computing while demonstrating practical applications of ensemble learning principles in speech emotion recognition.
+
+## Dataset Description
+
+**Primary Dataset: CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset)** **Provenance:** CREMA-D is a validated multi modal database created through collaboration between researchers and crowd sourced validation. The dataset contains emotional speech recordings from professional actors, making it ideal for supervised learning approaches to emotion classification.
+
+### Dimensions & Structure:
+
+| **Attribute** | **Details** |
+|-------------------------|------------------------------------------------|
+| **Total Files** | 7,442 audio clips from diverse emotional expressions |
+| **Speakers** | 91 professional actors (48 male, 43 female) |
+| **Age Range** | 20–74 years, providing demographic diversity |
+| **Target Emotions** | 4 emotions selected for analysis (happy, sad, angry, fear) |
+| **Emotional Intensities** | Multiple intensity levels (low, medium, high, unspecified) |
+| **File Format** | WAV files suitable for feature extraction |
+| **Sentence Variety** | 12 different sentences to reduce linguistic bias |
+
+**Dataset Selection Rationale:** CREMA-D was chosen for its substantial size, demographic diversity, and established use in emotion recognition research. The dataset's systematic organization and intensity labels directly support both research questions, while its availability through Kaggle ensures reproducible research practices.
+
+## Signal Processing (Extract, Transform, Load)
+
+This pipeline enables the conversion of complex, high-dimensional waveforms into compact, informative representations—such as MFCCs or spectral centroids—that capture the essence of the sound.
+
+```{python}
+#| label: process audio signal
+#| echo: true
+#| message: false
+
+# Import libs
+import librosa
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from pathlib import Path
+import os
+
+# CREMA-D filename structure: ActorID_SentenceID_EmotionID_IntensityID.wav
+audio_dir = "./data/CREMA_D/"
+
+def parse_cremad_filename(file_path):
+  name = os.path.splitext(os.path.basename(file_path))[0]
+  parts = name.split('_')
+  actor_id = parts[0]
+  sentence_id = parts[1]
+  emotion = parts[2]
+  intensity = parts[3].split('.')[0]
+  
+  # mapping emotion_id to emotions
+  emotion_map = {"ANG":"angry"
+  ,"DIS":"disgust"
+  ,"FEA":"fear"
+  ,"HAP":"happy"
+  ,"NEU":"neutral"
+  ,"SAD":"sad"}
+  
+  return {
+    "actor_id": actor_id
+    ,"sentence": sentence_id
+    ,"emotion": emotion_map[emotion]
+    ,"intensity": intensity
+  }
+
+def extract_features(file_path):
+  """
+    Iteratively extracts audio features from a given .wav file using librosa.
+
+    Features:
+        - Zero Crossing Rate
+        - Chroma STFT
+        - MFCCs
+        - Root Mean Square Energy
+        - Spectral Centroid
+
+    Returns:
+        list of dict: Each dictionary containing the features, and metadata parsed from the filename.
+  """
+  # initalize empty list to store all features
+  all_features = []
+  
+  # iteratively scan os directory
+  for entry in os.scandir(file_path):
+    if entry.is_file():
+        # load .wav files iteratively from entry path
+        y, sr = librosa.load(entry.path, sr=22050)
+        
+        # initiallize empty dict
+        features = {}
+        
+        # 0. File Metadata
+        fmd = parse_cremad_filename(entry.name)
+        audio_duration = len(y)/ sr
+        features['actor_id'] = fmd['actor_id']
+        features['sentence'] = fmd['sentence']
+        features['emotion'] = fmd['emotion']
+        features['intensity'] = fmd['intensity']
+        features['audio_duration'] = audio_duration
+        features['sample_rate'] = sr
+        
+        # 1. MFCCs (most important for speech)
+        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+        for i in range(13):
+            features[f'mfcc_{i+1}_mean'] = np.mean(mfccs[i])
+            features[f'mfcc_{i+1}_std'] = np.std(mfccs[i])
+        
+        # 2. Spectral features
+        spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
+        features['spectral_centroid_mean'] = np.mean(spectral_centroid)
+        features['spectral_centroid_std'] = np.std(spectral_centroid)
+        
+        spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+        features['spectral_rolloff_mean'] = np.mean(spectral_rolloff)
+        
+        spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+        features['spectral_bandwidth_mean'] = np.mean(spectral_bandwidth)
+        
+        # 3. Energy and rhythm
+        rms = librosa.feature.rms(y=y)
+        features['rms_mean'] = np.mean(rms)
+        features['rms_std'] = np.std(rms)
+      
+        zcr = librosa.feature.zero_crossing_rate(y)
+        features['zcr_mean'] = np.mean(zcr)
+        
+        # 4. Pitch and harmony
+        chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+        features['chroma_mean'] = np.mean(chroma)
+        features['chroma_std'] = np.std(chroma)
+        
+        all_features.append(features)
+        
+  return all_features
+
+# Function call code has been commented since the data has been extracted and converted into csv file for consumption.
+# call function, while passing directory of audio files
+#audio_features = extract_features(audio_dir)
+
+# convert to a data frame
+#df = pd.DataFrame(audio_features)
+
+# export dataframe to csv for repoducibility 
+#df.to_csv("./data/crema_d.csv")
+
+df = pd.read_csv("./data/crema_d.csv", index_col=0)
+```
+
+### Dataset
+
+```{python}
+#| label: dataset
+#| echo: false
+df.head()
+```
+
+### Dataset Information
+
+```{python}
+#| label: dataset info
+#| echo: false
+df.info()
+```
+
+### Target Frequency
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+
+plt.figure(figsize=(8, 6))
+sns.countplot(data=df, x='emotion')
+plt.title("Target Counts")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+### Intensity Frequency
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+
+plt.figure(figsize=(8, 6))
+sns.countplot(data=df, x='intensity')
+plt.title("Intesity Counts")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+### Spectral Centroid Distribution
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+plt.figure(figsize=(8, 6))
+sns.violinplot(x=df['emotion'], y=df['spectral_centroid_mean'], hue=df['emotion'])
+plt.title("Spectral Centroid Distribution by Emotion")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+### Root Mean Square Distribution
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+plt.figure(figsize=(8, 6))
+sns.violinplot(x=df['emotion'], y=df['rms_mean'], hue=df['emotion'])
+plt.title("Root Mean Square Distribution by Emotion")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+### Zero Crossing Rate Distribution
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+plt.figure(figsize=(8, 6))
+sns.violinplot(x=df['emotion'], y=df['zcr_mean'], hue=df['emotion'])
+plt.title("Zero Crossing Rate Distribution by Emotion")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+### Croma Distribution
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+plt.figure(figsize=(8, 6))
+sns.violinplot(x=df['emotion'], y=df['chroma_mean'], hue=df['emotion'])
+plt.title("Croma Distribution by Emotion")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+## Research Questions
+
+### Question 1: Basic Emotion Classification
+
+**Can we accurately classify four emotions (happy, sad, angry, fear) from audio features using traditional machine learning algorithms?**<br> This question investigates the fundamental capability of machine learning models to distinguish emotional states through acoustic analysis. By focusing on four distinct emotions, the study maintains sufficient complexity while ensuring manageable scope for comprehensive analysis.
+
+### Question 2: Ensemble Learning Effectiveness
+
+**Can combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition?**<br> This question explores the relationship between emotional expression intensity and model performance, investigating whether stronger emotional expressions are easier to classify and whether audio features can predict when models will be confident in their predictions.
+
+## Analysis Plan
+
+### Question 1: Basic Emotion Classification
+
+**Target Variable:** `emotion` (4-class: happy, sad, angry, fear)
+
+**Feature Extraction Strategy:** The analysis employs five key acoustic feature categories using the librosa library:
+
+**1. Spectral Contrast:** Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions
+
+**2. MFCCs (Mel-frequency cepstral coefficients):** Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition
+
+**3. Chroma Features:** Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody
+
+**4. Zero-Crossing Rate:** Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments
+
+**5. Root Mean Square (RMS) Energy:** Measures overall signal energy, correlating with loudness and emotional intensity
+
+**Model Implementation:** Three complementary algorithms will be implemented and compared:
+
+| **Model** | **Description** |
+|---------------------|---------------------------------------------------|
+| **Logistic Regression** | Provides interpretable baseline with coefficient analysis for feature importance |
+| **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
+| **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
+
+**Evaluation Framework:** Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.
+
+### Question 2: Ensemble Learning Effectiveness
+
+**Variables Involved:**
+
+-   All audio features from Question 1 (spectral contrast, MFCCs, chroma, ZCR, RMS energy)
+-   `individual_predictions`: Predictions from each base model (LR, RF, SVM)
+-   `ensemble_prediction`: Combined prediction from ensemble methods
+-   `individual_confidence`: Confidence scores (prediction probabilities) from each model
+-   `ensemble_confidence`: Combined confidence measures from ensemble approaches
+
+**Analysis Approach:**
+
+**Base Model Training:** Train all three algorithms (Logistic Regression, Random Forest, SVM) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.
+
+**Ensemble Creation:** Implement multiple ensemble strategies including hard voting (majority vote), soft voting (probability-based), and simple probability averaging to combine individual model predictions and assess different aggregation approaches.
+
+**Performance Comparison:** Conduct systematic comparison of individual model accuracy against ensemble methods using cross-validation, statistical significance testing, and detailed performance metrics to quantify improvement gains.
+
+**Feature Analysis:** Investigate which acoustic features contribute most effectively to each algorithm's performance, identifying complementary strengths that ensemble methods can exploit for improved classification accuracy.
+
+## Technical Implementation
+
+**Programming Environment:** Python with scientific computing stack
+
+#### Key Libraries
+
+| **Library**              | **Purpose**                                 |
+|--------------------------|---------------------------------------------|
+| `librosa`                | Audio feature extraction and processing     |
+| `scikit-learn`           | Machine learning algorithms and evaluation  |
+| `pandas` / `numpy`       | Data manipulation and numerical computation |
+| `matplotlib` / `seaborn` | Visualization and results presentation      |
+
+## Expected Project Timeline (3\~ weeks)
+
+#### Week 0: Data preparation and exploration
+
+-   Download CREMA-D from Kaggle (\~2GB)
+-   Explore dataset structure and file naming
+-   Proposal write-up and review
+
+#### Week 1: Feature extraction and dataset creation
+
+-   Implement feature extraction pipeline
+-   Process selected audio files
+-   Create clean feature dataset
+-   Exploratory data analysis of features vs emotions
+
+#### Week 2: Individual model development
+
+-   Train baseline models (Logistic Regression, Decision Tree, SVM)
+-   Hyperparameter tuning using GridSearchCV
+-   Performance evaluation and comparison
+-   Feature importance analysis
+
+#### Week 3: Ensemble methods and final analysis
+
+-   Implement ensemble approaches
+-   Compare individual vs ensemble performance
+-   Statistical significance testing
+-   Final report and presentation
+
+## Project Structure
+
+| Folder / File Name | Description |
+|---------------------------------------------|---------------------------|
+| `.quarto/` | Quarto's internal folder—automatically created to manage rendering settings and cache. You typically don't touch this. |
+| `_extra/` | Stores supporting materials that aren't part of the main outputs but are useful for context. |
+| `_freeze/` | Keeps locked-in versions of documents to ensure consistency when rebuilding or sharing. |
+| `_site/` | Final output folder generated after rendering; includes the HTML version of your site. |
+| `data/` | Where all the data lives—raw inputs, cleaned datasets, and a README explaining structure and sources. |
+| `images/` | Used for storing visual content like charts, graphs, and illustrations referenced in your `.qmd` files. |
+| `style/` | Contains custom design elements, like SCSS files, that control the look and feel of your site. |
+| `index.qmd` | Acts as the homepage, giving a snapshot of what the project is about. |
+| `about.qmd` | Gives extra context—background info, author bio, or detailed project narrative. |
+| `proposal.qmd` | The full research plan: includes goals, methods, schedule, and how everything is structured. |
+| `presentation.qmd` | Slide deck made with Quarto to highlight the most important insights from your project. |
+
+##
