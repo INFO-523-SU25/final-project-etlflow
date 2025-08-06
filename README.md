@@ -1,25 +1,4 @@
----
-title: "Acoustic Emotion Classification"
-subtitle: "Optimizing Performance Through Ensemble Methods"
-author: 
-  - name: "Ralph Andrade"
-    affiliations:
-      - name: "College of Information Science, University of Arizona"
-description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
-format:
-  html:
-    code-tools: true
-    code-overflow: wrap
-    code-line-numbers: true
-    embed-resources: true
-editor: visual
-code-annotations: hover
-execute:
-  warning: false
-jupyter: python3
----
-
-## Project Overview
+## Project Proposal
 
 This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions—happy, sad, angry, and fear—through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
 
