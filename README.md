@@ -1,6 +1,6 @@
 ## Project Proposal
 
-This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions—happy, sad, angry, and fear—through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
+This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions; happy, sad, angry, and fear, through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
 
 The project addresses two fundamental questions in acoustic emotion recognition: first, whether traditional machine learning algorithms can accurately classify emotions using engineered audio features, and second, how ensemble methods can significantly improve classification performance compared to individual models. This investigation contributes to the growing field of effective computing while demonstrating practical applications of ensemble learning principles in speech emotion recognition.
 
@@ -24,7 +24,7 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 
 ## Signal Processing (Extract, Transform, Load)
 
-This pipeline enables the conversion of complex, high-dimensional waveforms into compact, informative representations—such as MFCCs or spectral centroids—that capture the essence of the sound.
+This pipeline enables the conversion of complex, high-dimensional waveforms into compact, informative representations, such as MFCCs or spectral centroids, that capture the essence of the sound.
 
 ```{python}
 #| label: process audio signal
