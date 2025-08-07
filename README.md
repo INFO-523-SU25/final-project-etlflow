@@ -46,34 +46,6 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 | `pandas` / `numpy`       | Data manipulation and numerical computation |
 | `matplotlib` / `seaborn` | Visualization and results presentation      |
 
-## Expected Project Timeline (3\~ weeks)
-
-#### Week 0: Data preparation and exploration
-
--   Download CREMA-D from Kaggle (\~2GB)
--   Explore dataset structure and file naming
--   Proposal write-up and review
-
-#### Week 1: Feature extraction and dataset creation
-
--   Implement feature extraction pipeline
--   Process selected audio files
--   Create clean feature dataset
--   Exploratory data analysis of features vs emotions
-
-#### Week 2: Individual model development
-
--   Train baseline models (Logistic Regression, Decision Tree, SVM)
--   Hyperparameter tuning using GridSearchCV
--   Performance evaluation and comparison
--   Feature importance analysis
-
-#### Week 3: Ensemble methods and final analysis
-
--   Implement ensemble approaches
--   Compare individual vs ensemble performance
--   Statistical significance testing
--   Final report and presentation
 
 ## Project Structure
 
