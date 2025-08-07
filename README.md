@@ -32,55 +32,6 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 
 **Can combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition?**<br> This question explores the relationship between emotional expression intensity and model performance, investigating whether stronger emotional expressions are easier to classify and whether audio features can predict when models will be confident in their predictions.
 
-## Analysis Plan
-
-### Question 1: Basic Emotion Classification
-
-**Target Variable:** `emotion` (4-class: happy, sad, angry, fear)
-
-**Feature Extraction Strategy:** The analysis employs five key acoustic feature categories using the librosa library:
-
-**1. Spectral Contrast:** Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions
-
-**2. MFCCs (Mel-frequency cepstral coefficients):** Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition
-
-**3. Chroma Features:** Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody
-
-**4. Zero-Crossing Rate:** Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments
-
-**5. Root Mean Square (RMS) Energy:** Measures overall signal energy, correlating with loudness and emotional intensity
-
-
-**Model Implementation:** Three complementary algorithms will be implemented and compared:
-
-| **Model** | **Description** |
-|---------------------|---------------------------------------------------|
-| **Logistic Regression** | Provides interpretable baseline with coefficient analysis for feature importance |
-| **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
-| **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
-
-**Evaluation Framework:** Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.
-
-
-### Question 2: Ensemble Learning Effectiveness
-
-**Variables Involved:**
-
--   All audio features from Question 1 (spectral contrast, MFCCs, chroma, ZCR, RMS energy)
--   `individual_predictions`: Predictions from each base model (LR, RF, SVM)
--   `ensemble_prediction`: Combined prediction from ensemble methods
--   `individual_confidence`: Confidence scores (prediction probabilities) from each model
--   `ensemble_confidence`: Combined confidence measures from ensemble approaches
-
-**Analysis Approach:**
-
-**Base Model Training:** Train all three algorithms (Logistic Regression, Random Forest, SVM) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.
-
-**Ensemble Creation:** Implement multiple ensemble strategies including hard voting (majority vote), soft voting (probability-based), and simple probability averaging to combine individual model predictions and assess different aggregation approaches.
-
-**Performance Comparison:** Conduct systematic comparison of individual model accuracy against ensemble methods using cross-validation, statistical significance testing, and detailed performance metrics to quantify improvement gains.
-
-**Feature Analysis:** Investigate which acoustic features contribute most effectively to each algorithm's performance, identifying complementary strengths that ensemble methods can exploit for improved classification accuracy.
 
 ## Technical Implementation
 
