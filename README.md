@@ -22,229 +22,6 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 
 **Dataset Selection Rationale:** CREMA-D was chosen for its substantial size, demographic diversity, and established use in emotion recognition research. The dataset's systematic organization and intensity labels directly support both research questions, while its availability through Kaggle ensures reproducible research practices.
 
-## Signal Processing (Extract, Transform, Load)
-
-This pipeline enables the conversion of complex, high-dimensional waveforms into compact, informative representations, such as MFCCs or spectral centroids, that capture the essence of the sound.
-
-```{python}
-#| label: process audio signal
-#| echo: true
-#| message: false
-
-# Import libs
-import librosa
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from pathlib import Path
-import os
-
-# CREMA-D filename structure: ActorID_SentenceID_EmotionID_IntensityID.wav
-audio_dir = "./data/CREMA_D/"
-
-def parse_cremad_filename(file_path):
-  name = os.path.splitext(os.path.basename(file_path))[0]
-  parts = name.split('_')
-  actor_id = parts[0]
-  sentence_id = parts[1]
-  emotion = parts[2]
-  intensity = parts[3].split('.')[0]
-  
-  # mapping emotion_id to emotions
-  emotion_map = {"ANG":"angry"
-  ,"DIS":"disgust"
-  ,"FEA":"fear"
-  ,"HAP":"happy"
-  ,"NEU":"neutral"
-  ,"SAD":"sad"}
-  
-  return {
-    "actor_id": actor_id
-    ,"sentence": sentence_id
-    ,"emotion": emotion_map[emotion]
-    ,"intensity": intensity
-  }
-
-def extract_features(file_path):
-  """
-    Iteratively extracts audio features from a given .wav file using librosa.
-
-    Features:
-        - Zero Crossing Rate
-        - Chroma STFT
-        - MFCCs
-        - Root Mean Square Energy
-        - Spectral Centroid
-
-    Returns:
-        list of dict: Each dictionary containing the features, and metadata parsed from the filename.
-  """
-  # initalize empty list to store all features
-  all_features = []
-  
-  # iteratively scan os directory
-  for entry in os.scandir(file_path):
-    if entry.is_file():
-        # load .wav files iteratively from entry path
-        y, sr = librosa.load(entry.path, sr=22050)
-        
-        # initiallize empty dict
-        features = {}
-        
-        # 0. File Metadata
-        fmd = parse_cremad_filename(entry.name)
-        audio_duration = len(y)/ sr
-        features['actor_id'] = fmd['actor_id']
-        features['sentence'] = fmd['sentence']
-        features['emotion'] = fmd['emotion']
-        features['intensity'] = fmd['intensity']
-        features['audio_duration'] = audio_duration
-        features['sample_rate'] = sr
-        
-        # 1. MFCCs (most important for speech)
-        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-        for i in range(13):
-            features[f'mfcc_{i+1}_mean'] = np.mean(mfccs[i])
-            features[f'mfcc_{i+1}_std'] = np.std(mfccs[i])
-        
-        # 2. Spectral features
-        spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
-        features['spectral_centroid_mean'] = np.mean(spectral_centroid)
-        features['spectral_centroid_std'] = np.std(spectral_centroid)
-        
-        spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-        features['spectral_rolloff_mean'] = np.mean(spectral_rolloff)
-        
-        spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
-        features['spectral_bandwidth_mean'] = np.mean(spectral_bandwidth)
-        
-        # 3. Energy and rhythm
-        rms = librosa.feature.rms(y=y)
-        features['rms_mean'] = np.mean(rms)
-        features['rms_std'] = np.std(rms)
-      
-        zcr = librosa.feature.zero_crossing_rate(y)
-        features['zcr_mean'] = np.mean(zcr)
-        
-        # 4. Pitch and harmony
-        chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-        features['chroma_mean'] = np.mean(chroma)
-        features['chroma_std'] = np.std(chroma)
-        
-        all_features.append(features)
-        
-  return all_features
-
-# Function call code has been commented since the data has been extracted and converted into csv file for consumption.
-# call function, while passing directory of audio files
-#audio_features = extract_features(audio_dir)
-
-# convert to a data frame
-#df = pd.DataFrame(audio_features)
-
-# export dataframe to csv for repoducibility 
-#df.to_csv("./data/crema_d.csv")
-
-df = pd.read_csv("./data/crema_d.csv", index_col=0)
-```
-
-### Dataset
-
-```{python}
-#| label: dataset
-#| echo: false
-df.head()
-```
-
-### Dataset Information
-
-```{python}
-#| label: dataset info
-#| echo: false
-df.info()
-```
-
-### Target Frequency
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-
-plt.figure(figsize=(8, 6))
-sns.countplot(data=df, x='emotion')
-plt.title("Target Counts")
-plt.xticks(rotation=45)
-plt.show()
-```
-
-### Intensity Frequency
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-
-plt.figure(figsize=(8, 6))
-sns.countplot(data=df, x='intensity')
-plt.title("Intesity Counts")
-plt.xticks(rotation=45)
-plt.show()
-```
-
-### Spectral Centroid Distribution
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-plt.figure(figsize=(8, 6))
-sns.violinplot(x=df['emotion'], y=df['spectral_centroid_mean'], hue=df['emotion'])
-plt.title("Spectral Centroid Distribution by Emotion")
-plt.xticks(rotation=45)
-plt.show()
-```
-
-### Root Mean Square Distribution
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-plt.figure(figsize=(8, 6))
-sns.violinplot(x=df['emotion'], y=df['rms_mean'], hue=df['emotion'])
-plt.title("Root Mean Square Distribution by Emotion")
-plt.xticks(rotation=45)
-plt.show()
-```
-
-### Zero Crossing Rate Distribution
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-plt.figure(figsize=(8, 6))
-sns.violinplot(x=df['emotion'], y=df['zcr_mean'], hue=df['emotion'])
-plt.title("Zero Crossing Rate Distribution by Emotion")
-plt.xticks(rotation=45)
-plt.show()
-```
-
-### Croma Distribution
-
-```{python}
-#| echo: false
-#| warning: false
-#| message: false
-plt.figure(figsize=(8, 6))
-sns.violinplot(x=df['emotion'], y=df['chroma_mean'], hue=df['emotion'])
-plt.title("Croma Distribution by Emotion")
-plt.xticks(rotation=45)
-plt.show()
-```
-
 ## Research Questions
 
 ### Question 1: Basic Emotion Classification
@@ -273,6 +50,7 @@ plt.show()
 
 **5. Root Mean Square (RMS) Energy:** Measures overall signal energy, correlating with loudness and emotional intensity
 
+
 **Model Implementation:** Three complementary algorithms will be implemented and compared:
 
 | **Model** | **Description** |
@@ -282,6 +60,7 @@ plt.show()
 | **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
 
 **Evaluation Framework:** Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.
+
 
 ### Question 2: Ensemble Learning Effectiveness
 
@@ -350,12 +129,9 @@ plt.show()
 | Folder / File Name | Description |
 |---------------------------------------------|---------------------------|
 | `.quarto/` | Quarto's internal folder—automatically created to manage rendering settings and cache. You typically don't touch this. |
-| `_extra/` | Stores supporting materials that aren't part of the main outputs but are useful for context. |
 | `_freeze/` | Keeps locked-in versions of documents to ensure consistency when rebuilding or sharing. |
-| `_site/` | Final output folder generated after rendering; includes the HTML version of your site. |
 | `data/` | Where all the data lives—raw inputs, cleaned datasets, and a README explaining structure and sources. |
 | `images/` | Used for storing visual content like charts, graphs, and illustrations referenced in your `.qmd` files. |
-| `style/` | Contains custom design elements, like SCSS files, that control the look and feel of your site. |
 | `index.qmd` | Acts as the homepage, giving a snapshot of what the project is about. |
 | `about.qmd` | Gives extra context—background info, author bio, or detailed project narrative. |
 | `proposal.qmd` | The full research plan: includes goals, methods, schedule, and how everything is structured. |
