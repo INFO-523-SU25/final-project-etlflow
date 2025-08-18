@@ -199,3 +199,133 @@ pca = PCA()
 X_train_pca = pca.fit_transform(X_train_scaled)
 X_test_pca = pca.transform(X_test_scaled)
 ```
+
+### Model Traning and Evalution
+
+```{python}
+# Skip extending y_train - we want to exclude omitted emotions from predictions
+# Use original y_train that only contains target emotions
+
+# Get emotion labels for reporting
+emotion_labels = [emotion for emotion in le.classes_ if emotion in target_emotions]
+target_label_mapping = {le.transform([emotion])[0]: emotion for emotion in emotion_labels}
+
+print("Target emotion label mapping:", target_label_mapping)
+
+def evaluate_model(model, X_train, X_test, y_train, y_test, model_name):
+    """
+    Train and evaluate a model with comprehensive metrics
+    """
+    print(f"\n{'='*50}")
+    print(f"Training {model_name}")
+    print(f"{'='*50}")
+    
+    # Train model
+    model.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Overall metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    precision_macro = precision_score(y_test, y_pred, average='macro', zero_division=0)
+    recall_macro = recall_score(y_test, y_pred, average='macro', zero_division=0)
+    f1_macro = f1_score(y_test, y_pred, average='macro', zero_division=0)
+    
+    print(f"\n{model_name} Overall Performance:")
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"Macro Precision: {precision_macro:.4f}")
+    print(f"Macro Recall: {recall_macro:.4f}")
+    print(f"Macro F1-Score: {f1_macro:.4f}")
+    
+    # Per-class metrics
+    print(f"\n{model_name} Per-Class Performance:")
+    target_names = [target_label_mapping.get(i, f'Class_{i}') for i in sorted(np.unique(y_test))]
+    
+    report = classification_report(y_test, y_pred, 
+                                 target_names=target_names,
+                                 output_dict=True, 
+                                 zero_division=0)
+    
+    # Display per-class metrics in a formatted way
+    print(f"{'Emotion':<10} {'Precision':<10} {'Recall':<10} {'F1-Score':<10} {'Support':<10}")
+    print("-" * 50)
+    
+    for emotion in target_names:
+        if emotion in report:
+            metrics = report[emotion]
+            print(f"{emotion:<10} {metrics['precision']:<10.4f} {metrics['recall']:<10.4f} "
+                  f"{metrics['f1-score']:<10.4f} {int(metrics['support']):<10}")
+    
+    # Confusion Matrix
+    cm = confusion_matrix(y_test, y_pred)
+    
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=target_names, yticklabels=target_names)
+    plt.title(f'{model_name} - Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
+    
+    # Return results for comparison
+    return {
+        'model_name': model_name,
+        'accuracy': accuracy,
+        'precision_macro': precision_macro,
+        'recall_macro': recall_macro,
+        'f1_macro': f1_macro,
+        'per_class_report': report
+    }
+
+# Initialize models
+# random forest
+rf_model = RandomForestClassifier(
+    n_estimators=1000,           # More trees for better performance
+    max_depth=15,               # Prevent overfitting while allowing complexity
+    min_samples_split=5,        # Require more samples to split
+    min_samples_leaf=2,         # Minimum samples in leaf nodes
+    max_features='sqrt',        # Feature sampling at each split
+    bootstrap=True,             # Bootstrap sampling
+    oob_score=True,             # Out-of-bag scoring
+    n_jobs=-1,                  # Use all available cores
+    random_state=42
+)
+# support vector machine
+svm_model = SVC(
+    kernel='rbf',               # RBF kernel works well for most cases
+    C=10.0,                     # Regularization parameter
+    gamma='scale',              # Kernel coefficient (auto-scaled)
+    probability=True,           # Enable probability estimates
+    cache_size=1000,            # Increase cache for faster training
+    class_weight='balanced',    # Handle imbalanced datasets
+    random_state=42
+)
+
+# standard neral network 
+mlp_model = MLPClassifier(
+    hidden_layer_sizes=(128, 64, 32), 
+    max_iter=1000,
+    random_state=42, 
+    early_stopping=True, 
+    validation_fraction=0.1
+    )
+
+# Evaluate ensemble models along with stand alone models
+results = []
+
+# Random Forest
+rf_results = evaluate_model(rf_model, X_train_pca, X_test_pca, 
+                           y_train, y_test, "Random Forest")
+results.append(rf_results)
+
+# SVM
+svm_results = evaluate_model(svm_model, X_train_pca, X_test_pca, 
+                            y_train, y_test, "SVM")
+results.append(svm_results)
+
+# MLP
+mlp_results = evaluate_model(mlp_model, X_train_pca, X_test_pca, 
+                            y_train, y_test, "MLP(Neural Net)")
+results.append(mlp_results)
+```
