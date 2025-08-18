@@ -149,3 +149,16 @@ df['encoded_emotion'] = le.fit_transform(df['emotion'])
 # View mapping
 print(dict(zip(le.classes_, le.transform(le.classes_))))
 ```
+
+### Splitting the dataset
+
+Since we are absorbing neutral and disgust records into the training split, we have split the data into target and omitted data frames. The train test split is performed on the target data frame, while the omitted data frame is concatenated back into the target after the split.
+
+```{python}
+# train/test split for target emotions
+X = df.drop(columns=['emotion','encoded_emotion'])
+y = df['encoded_emotion']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+
+```
