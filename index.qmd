@@ -162,3 +162,40 @@ y = df['encoded_emotion']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 ```
+
+### Data Scaling and Dimension Reduction
+
+Data is scaled using the standard scaler on all numeric features that are part of the X_train, and X_test split. After scaling, we perform Principal Component Analysis to determine the number of dimensions while retaining 95% variance.
+
+```{python}
+# select all numeric columns
+num_cols = X_train.select_dtypes(include='number').columns
+
+# Apply standard scaler on numeric data
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train[num_cols])
+X_test_scaled = scaler.transform(X_test[num_cols])
+
+# Apply PCA while retaining 90
+pca = PCA(n_components=.95)
+X_train_pca = pca.fit_transform(X_train_scaled)
+X_test_pca = pca.transform(X_test_scaled)
+
+# Explained variance ratio
+explained_variance = pca.explained_variance_ratio_
+
+# Create scree plot
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, len(explained_variance)+1), explained_variance, 'o-', linewidth=2, color='blue')
+plt.title('Scree Plot')
+plt.xlabel('Principal Component')
+plt.ylabel('Variance Explained')
+plt.xticks(range(1, len(explained_variance)+1))
+plt.grid(True)
+plt.show()
+
+# Reapply PCA Components from scree plot
+pca = PCA()
+X_train_pca = pca.fit_transform(X_train_scaled)
+X_test_pca = pca.transform(X_test_scaled)
+```
