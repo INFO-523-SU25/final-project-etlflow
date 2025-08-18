@@ -329,3 +329,80 @@ mlp_results = evaluate_model(mlp_model, X_train_pca, X_test_pca,
                             y_train, y_test, "MLP(Neural Net)")
 results.append(mlp_results)
 ```
+
+### Model Comparision
+```{python}
+
+print("MODEL COMPARISON SUMMARY")
+print(f"{'='*50}")
+
+# Create comparison DataFrame
+comparison_df = pd.DataFrame({
+    'Model': [result['model_name'] for result in results],
+    'Accuracy': [result['accuracy'] for result in results],
+    'Precision (Macro)': [result['precision_macro'] for result in results],
+    'Recall (Macro)': [result['recall_macro'] for result in results],
+    'F1-Score (Macro)': [result['f1_macro'] for result in results]
+})
+
+print(comparison_df.round(4))
+
+# Visualize model comparison
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+
+metrics = ['Accuracy', 'Precision (Macro)', 'Recall (Macro)', 'F1-Score (Macro)']
+colors = ['skyblue', 'lightcoral', 'lightgreen']
+
+for i, metric in enumerate(metrics):
+    row = i // 2
+    col = i % 2
+    
+    ax = axes[row, col]
+    bars = ax.bar(comparison_df['Model'], comparison_df[metric], color=colors)
+    ax.set_title(f'{metric} Comparison')
+    ax.set_ylabel(metric)
+    ax.set_ylim(0, 1)
+    
+    # Add value labels on bars
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height + 0.01,
+                f'{height:.3f}', ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+
+# Best performing model
+best_model_idx = comparison_df['F1-Score (Macro)'].idxmax()
+best_model = comparison_df.iloc[best_model_idx]
+
+print(f"\nBest Performing Model: {best_model['Model']}")
+print(f"F1-Score (Macro): {best_model['F1-Score (Macro)']:.4f}")
+
+# Detailed per-emotion analysis across all models
+print("PER-EMOTION PERFORMANCE ACROSS MODELS")
+print(f"{'='*50}")
+
+# Get target emotion names from the unique test labels
+target_names = [target_label_mapping.get(i, f'Class_{i}') for i in sorted(np.unique(y_test))]
+
+emotion_performance = {}
+for emotion in target_names:
+    emotion_performance[emotion] = {}
+    for result in results:
+        if emotion in result['per_class_report']:
+            emotion_performance[emotion][result['model_name']] = {
+                'precision': result['per_class_report'][emotion]['precision'],
+                'recall': result['per_class_report'][emotion]['recall'],
+                'f1_score': result['per_class_report'][emotion]['f1-score']
+            }
+
+# Create detailed emotion analysis
+for emotion in target_names:
+    print(f"\n{emotion.upper()} Performance:")
+    print(f"{'Model':<15} {'Precision':<10} {'Recall':<10} {'F1-Score':<10}")
+    print("-" * 50)
+    
+    for model_name, metrics in emotion_performance[emotion].items():
+        print(f"{model_name:<15} {metrics['precision']:<10.4f} {metrics['recall']:<10.4f} {metrics['f1_score']:<10.4f}")
+```
