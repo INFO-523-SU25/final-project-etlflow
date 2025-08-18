@@ -85,3 +85,67 @@ target_emotions = ['happy', 'sad', 'angry', 'fear', 'neutral','disgust']
 target_counts = df[df['emotion'].isin(target_emotions)]['emotion'].value_counts()
 print("\nTarget emotion counts:\n", target_counts)
 ```
+
+# Data Preprocessing
+## Data Cleaning
+Since the data contains both positive, zero, and negative skew, we are going to use the Yeo Johnson power transformer to make sure features are standardized.
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+
+# missing values in each column
+missing_df = df.isna().sum()
+print("Missing values per column:\n", missing_df)
+
+# Remove unwanted columns
+df = df.drop(columns=['actor_id', 'sentence', 'intensity','sample_rate'])
+
+#Indentify skew of numeric cols
+num_cols = df.select_dtypes(include='number').columns
+print(num_cols)
+
+skewness_before = df[num_cols].skew().sort_values(ascending=False)
+print("Before:", skewness_before)
+
+# yeo-johnson power transformer
+yeojt = PowerTransformer(method='yeo-johnson', standardize=True)
+df_transformed = yeojt.fit_transform(df[num_cols])
+
+# Create DataFrame from transformed data with correct columns
+df_t = pd.DataFrame(df_transformed, columns=num_cols)
+
+# Overwrite original columns in df with transformed values
+df[num_cols] = df_t
+
+# Get skewness after transformation
+skewness_after = df[num_cols].skew().sort_values(ascending=False)
+print("After:", skewness_after)
+
+# Combined before/after skewness chart
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+
+# Before transformation
+sns.barplot(x=skewness_before.values, y=skewness_before.index, ax=ax1, color='lightcoral')
+ax1.set_title("Skewness Before Yeo-Johnson", fontsize=14)
+ax1.axvline(x=0, color='red', linestyle='--', alpha=0.7)
+ax1.set_xlabel("Skewness", fontsize=12)
+
+# After transformation
+sns.barplot(x=skewness_after.values, y=skewness_after.index, ax=ax2, color='lightblue')
+ax2.set_title("Skewness After Yeo-Johnson", fontsize=14)
+ax2.axvline(x=0, color='red', linestyle='--', alpha=0.7)
+ax2.set_xlabel("Skewness", fontsize=12)
+
+# Adjust layout
+plt.tight_layout()
+plt.show()
+
+# encode target variable
+le = LabelEncoder()
+df['encoded_emotion'] = le.fit_transform(df['emotion'])
+
+# View mapping
+print(dict(zip(le.classes_, le.transform(le.classes_))))
+```
