@@ -31,3 +31,33 @@ Project's goal is to explore the effectiveness of unsupervised learning for pred
 -   **Q1. What is the classification accuracy of unsupervised methods for emotion recognition from acoustic features?**
 -   **Q2. How do standalone algorithms, ensemble approaches, and neural networks compare in terms of accuracy, robustness, and computational efficiency for emotion classification from audio?**
 
+# Exploratory Analysis
+## Inital data load & Observations
+```{python}
+#| label: dataset
+#| echo: true
+
+# Import libs
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import PowerTransformer, LabelEncoder, StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+
+# Import required libraries for models and metrics
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import (classification_report, confusion_matrix, 
+                           accuracy_score, precision_score, recall_score, f1_score)
+
+#import data into df
+df = pd.read_csv("./data/crema_d.csv", index_col=0)
+
+# number of variables and observations in the data
+print(f"Total observations: {df.shape[0]}")
+print(f"Number of features: {df.shape[1]}")
+```
+
