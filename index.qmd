@@ -26,3 +26,8 @@ This project investigates the fundamental capability of machine learning models 
 Building on the challenge of automatic emotion classification, this project leverages the Crowd-Sourced Emotional Multimodal Actors Dataset (CREMA-D), a widely recognized collection of acted speech designed for emotion research. The dataset comprises 7,442 `.wav` clips from 91 actors portraying six basic emotions. Existing research shows that while audio features like MFCCs and spectral properties are often used for emotion detection, there is still no agreement on the best feature selection or model designs, especially in traditional machine learning contexts. (Banerjee, Huang, & Lettiere, n.d.). We transformed raw audio signals into quantitative features using the `librosa` library, as detailed in our [proposal](https://info-523-su25.github.io/final-project-etlflow/proposal.html).
 
 Project's goal is to explore the effectiveness of unsupervised learning for predicting multi-class emotion targets, aiming to benchmark these results from ensemble strategies against standalone and neural network models. This methodology offers new perspective on the relative utility of unsupervised techniques in speech emotion recognition.
+
+## Research Question
+-   **Q1. What is the classification accuracy of unsupervised methods for emotion recognition from acoustic features?**
+-   **Q2. How do standalone algorithms, ensemble approaches, and neural networks compare in terms of accuracy, robustness, and computational efficiency for emotion classification from audio?**
+
