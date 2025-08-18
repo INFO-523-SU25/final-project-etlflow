@@ -61,3 +61,27 @@ print(f"Total observations: {df.shape[0]}")
 print(f"Number of features: {df.shape[1]}")
 ```
 
+### Target Class Distribution
+
+Since our projects goal is to predict mutiple classes, we need to determine if a class imbalance exists. Our aim for this project is to focus on predicting four (happy, sad, angry, fear) out of the six emotions in the dataset, as we intend to absorb the remainder (neutral , disgust) as part of the traning set.
+
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+
+plt.figure(figsize=(8, 6))
+sns.countplot(data=df, x='emotion', hue='emotion')
+plt.title("Target Counts")
+plt.xticks(rotation=45)
+plt.show()
+
+# Show class distribution for all emotions
+emotion_counts = df['emotion'].value_counts()
+print("Class distribution:\n", emotion_counts)
+
+# Focus on the four target emotions
+target_emotions = ['happy', 'sad', 'angry', 'fear', 'neutral','disgust']
+target_counts = df[df['emotion'].isin(target_emotions)]['emotion'].value_counts()
+print("\nTarget emotion counts:\n", target_counts)
+```
