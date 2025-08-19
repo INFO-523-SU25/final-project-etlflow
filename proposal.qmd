@@ -18,7 +18,7 @@ jupyter: python3
 
 ## Project Overview
 
-This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions—happy, sad, angry, and fear—through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
+This project investigates the application of machine learning techniques to classify emotions from speech audio using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset). The study focuses on distinguishing four primary emotions; happy, sad, angry, fear, neutral, and disgust, through acoustic feature analysis and explores how emotional intensity affects classification performance. By combining traditional feature engineering with ensemble learning methods, this research aims to develop robust emotion recognition models while examining the relationship between speech intensity and model confidence.
 
 The project addresses two fundamental questions in acoustic emotion recognition: first, whether traditional machine learning algorithms can accurately classify emotions using engineered audio features, and second, how ensemble methods can significantly improve classification performance compared to individual models. This investigation contributes to the growing field of effective computing while demonstrating practical applications of ensemble learning principles in speech emotion recognition.
 
@@ -33,12 +33,28 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 | **Total Files** | 7,442 audio clips from diverse emotional expressions |
 | **Speakers** | 91 professional actors (48 male, 43 female) |
 | **Age Range** | 20–74 years, providing demographic diversity |
-| **Target Emotions** | 4 emotions selected for analysis (happy, sad, angry, fear) |
+| **Target Emotions** | 6 emotions selected for analysis (happy, sad, angry, fear, neutral, disgust) |
 | **Emotional Intensities** | Multiple intensity levels (low, medium, high, unspecified) |
 | **File Format** | WAV files suitable for feature extraction |
 | **Sentence Variety** | 12 different sentences to reduce linguistic bias |
 
 **Dataset Selection Rationale:** CREMA-D was chosen for its substantial size, demographic diversity, and established use in emotion recognition research. The dataset's systematic organization and intensity labels directly support both research questions, while its availability through Kaggle ensures reproducible research practices.
+
+## **Feature Engineering**
+
+The analysis employs five key acoustic feature categories using the librosa library:
+
+**1. Spectral Contrast:** Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions
+
+**2. MFCCs (Mel-frequency cepstral coefficients):** Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition
+
+**3. Chroma Features:** Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody
+
+**4. Zero-Crossing Rate:** Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments
+
+**5. Root Mean Square (RMS) Energy:** Measures overall signal energy, correlating with loudness and emotional intensity
+
+These features collectively capture the three primary acoustic dimensions of emotional expression: **spectral characteristics, temporal dynamics, and energy distribution**. This multi-dimensional approach aligns with established psychoacoustic research showing that human emotional perception relies on diverse auditory cues processed simultaneously.
 
 ## Signal Processing (Extract, Transform, Load)
 
@@ -279,22 +295,10 @@ plt.show()
 
 **Target Variable:** `emotion`
 
-**Feature Extraction Strategy:** The analysis employs five key acoustic feature categories using the librosa library:
-
-**1. Spectral Contrast:** Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions
-
-**2. MFCCs (Mel-frequency cepstral coefficients):** Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition
-
-**3. Chroma Features:** Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody
-
-**4. Zero-Crossing Rate:** Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments
-
-**5. Root Mean Square (RMS) Energy:** Measures overall signal energy, correlating with loudness and emotional intensity
-
 **Model Implementation:** Three complementary algorithms will be implemented and compared:
 
 | **Model** | **Description** |
-|-----------------------|------------------------------------------------|
+|-------------------------|----------------------------------------------|
 | **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
 | **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
 | **Multi Layer Perceptron** | notable for being able to distinguish data that is not linearly separable |
