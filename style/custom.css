@@ -1,0 +1,130 @@
+/* === BASE === */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* === HEADINGS === */
+h1 { 
+  font-size: 2.5rem; 
+  font-weight: 700; 
+  color: #2c3e50; 
+}
+
+h2 { 
+  font-size: 2rem; 
+  font-weight: 600; 
+  color: #2c3e50; 
+}
+
+h3 { 
+  font-size: 1.5rem; 
+  font-weight: 600; 
+}
+
+h4 { 
+  font-size: 1.25rem; 
+  font-weight: 500; 
+}
+
+/* === TEXT === */
+p { margin-bottom: 1rem; }
+
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* === CODE === */
+code {
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  color: #e74c3c;
+}
+
+pre {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+/* === LISTS === */
+ul, ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+li { margin-bottom: 0.5rem; }
+
+/* === TABLES === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+th, td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+/* === QUARTO REVEAL.JS STYLES === */
+.reveal .slides section {
+  text-align: left;
+}
+
+.reveal .progress {
+  color: #3498db;
+}
+
+.reveal .controls {
+  color: #3498db;
+}
+
+/* === TITLE SLIDE === */
+.title-slide {
+  text-align: center;
+}
+
+.title-slide .title {
+  color: #ffffff;
+  text-shadow: #383737;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.title-slide .subtitle {
+  color: #ffee52;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.title-slide .author,
+.title-slide .institute,
+.title-slide .date {
+  color: #ff0000;
+  font-weight: 300;
+  font-size: 1.1rem;
+}
+
+/* === SLIDE BACKGROUNDS === */
+.slide-background {
+  background-color: #ffffff;
+}
