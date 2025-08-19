@@ -2,7 +2,6 @@
 title: "Acoustic Emotion Recognition"
 subtitle: "accuracy of unsupervised methods for recognition emotion from acoustic features"
 author: "Ralph Andrade"
-affiliations: "College of Information Science, University of Arizona"
 description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
 format:
   html:
@@ -30,7 +29,7 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 ### Dimensions & Structure:
 
 | **Attribute** | **Details** |
-|-------------------------|-----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | **Total Files** | 7,442 audio clips from diverse emotional expressions |
 | **Speakers** | 91 professional actors (48 male, 43 female) |
 | **Age Range** | 20–74 years, providing demographic diversity |
@@ -268,17 +267,17 @@ plt.show()
 
 ### Question 1: Basic Emotion Classification
 
-**Can we accurately classify four emotions (happy, sad, angry, fear) from audio features using traditional machine learning algorithms?**<br> This question investigates the fundamental capability of machine learning models to distinguish emotional states through acoustic analysis. By focusing on four distinct emotions, the study maintains sufficient complexity while ensuring manageable scope for comprehensive analysis.
+**Can we accurately classify four emotions (happy, sad, angry, fear) from audio features using traditional machine learning algorithms?**
 
 ### Question 2: Ensemble Learning Effectiveness
 
-**Can combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition?**<br> This question explores the relationship between emotional expression intensity and model performance, investigating whether stronger emotional expressions are easier to classify and whether audio features can predict when models will be confident in their predictions.
+**Can combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition?**
 
 ## Analysis Plan
 
 ### Question 1: Basic Emotion Classification
 
-**Target Variable:** `emotion` (4-class: happy, sad, angry, fear, disgust, neutral)
+**Target Variable:** `emotion`
 
 **Feature Extraction Strategy:** The analysis employs five key acoustic feature categories using the librosa library:
 
@@ -295,7 +294,7 @@ plt.show()
 **Model Implementation:** Three complementary algorithms will be implemented and compared:
 
 | **Model** | **Description** |
-|----------------------|--------------------------------------------------|
+|-----------------------|------------------------------------------------|
 | **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
 | **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
 | **Multi Layer Perceptron** | notable for being able to distinguish data that is not linearly separable |
