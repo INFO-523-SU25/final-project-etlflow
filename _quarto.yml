@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: Acoustic Emotion Classification
+  title: Acoustic Emotion Recognition
   navbar:
     right:
       - text: Project
