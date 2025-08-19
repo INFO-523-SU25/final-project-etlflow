@@ -1,11 +1,7 @@
 ---
-title: "Acoustic Emotion Classification"
-subtitle: "accuracy of unsupervised methods for emotion recognition from acoustic features"
-author: 
-  - name: "Ralph Andrade"
-    affiliations:
-      - name: "College of Information Science, University of Arizona"
-description: "An emotion classification project using machine learning to identify six emotions from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
+title: "Acoustic Emotion Recognition"
+subtitle: "accuracy of unsupervised methods for recognition emotion from acoustic features"
+author: "Ralph Andrade"
 title-slide-attributes:
   data-background-image: images/charts/abstract-acoustics.png
   data-background-size: stretch
@@ -13,7 +9,9 @@ title-slide-attributes:
   data-slide-number: none
 format:
   revealjs:
-    theme:  ['data/customtheming.scss']
+    theme:  ['style/customtheming.scss']
+    footer: "INFO 523 Final Project | Ralph Andrade"
+    transition: fade
     code-tools: true
     code-fold: true
     code-overflow: wrap
@@ -35,8 +33,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 ```
-
-
 
 ```{python}
 #| label: load-data
@@ -173,6 +169,7 @@ print("Numeric Description:\n", df.describe())
 # Conclusion
 
 ## Summary
+
 -   MLP is the best-performing model for multi-class emotion recognition
 -   Neural networks capture complex, non-linear patterns better than traditional or ensemble methods
 -   Future Work: temporal modeling, multimodal integration, advanced feature extraction
