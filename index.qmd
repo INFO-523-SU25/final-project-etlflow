@@ -1,11 +1,9 @@
 ---
-title: "Acoustic Emotion Classification"
-subtitle: "Optimizing Performance Through Ensemble Methods"
-author: 
-  - name: "Ralp Andrade"
-    affiliations:
-      - name: "College of Information Science, University of Arizona"
-description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
+title: "Acoustic Emotion Recognition"
+subtitle: "accuracy of unsupervised methods for recognition emotion from acoustic features"
+author: "Ralph Andrade"
+affiliations: "College of Information Science, University of Arizona"
+description: "An emotion classification project using machine learning to identify emotionsfrom speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
 format:
    html:
     code-tools: true
@@ -38,8 +36,7 @@ We transformed raw audio into quantitative features using librosa and applied a 
 ### Inital data load & Observations
 
 ```{python}
-#| label: dataset
-#| echo: true
+#| label: import-libs
 
 # Import libs
 import numpy as np
@@ -77,10 +74,9 @@ print("Missing values per column:\n", missing_df)
 We analyzed class distribution across the six emotions (neutral, happy, sad, angry, disgust, and fear). Our analysis showed that the "neutral" class has approximately 14.5% fewer samples than the other classes. Given this mild imbalance, no resampling was performed.
 
 ```{python}
+#| label: target-class-dist
 #| warning: false
 #| message: false
-#| echo: true
-
 plt.figure(figsize=(8, 6))
 sns.countplot(data=df, x='emotion', hue='emotion')
 plt.title("Target Counts")
@@ -104,9 +100,9 @@ target_counts = df[df['emotion'].isin(target_emotions)]['emotion'].value_counts(
 Data pre-processing included handling missing values, removing irrelevant columns, and transforming numerical features to reduce skewness. The Yeo–Johnson power transformation was applied to achieve more symmetric distributions (skewness \< ±0.5), improving suitability for downstream modeling. The categorical target variable (‘emotion’) was encoded into numerical labels for compatibility with machine learning algorithms.
 
 ```{python}
+#| label: data-cleaning
 #| warning: false
 #| message: false
-#| echo: true
 
 # Remove unwanted columns
 df = df.drop(columns=['actor_id', 'sentence', 'intensity','sample_rate'])
@@ -164,9 +160,10 @@ df['encoded_emotion'] = le.fit_transform(df['emotion'])
 The data is split using the train_test_split function, with 20% of the data reserved for testing. For the features (X), we drop the target column and its encoded variant, while for the labels (y), we retain only the encoded emotion.
 
 ```{python}
+#| label: train-test-split
 #| warning: false
 #| message: false
-#| echo: true
+
 # train/test split for target emotions
 X = df.drop(columns=['emotion','encoded_emotion'])
 y = df['encoded_emotion']
@@ -182,9 +179,9 @@ Before training our models, we applied data scaling and dimensionality reduction
 Next, we performed Principal Component Analysis (PCA) to reduce dimensionality while retaining 98% of the variance. PCA transforms the scaled features into a set of orthogonal components, capturing most of the information in fewer dimensions. We evaluated the explained variance ratio for each component and visualized it using a scree plot to confirm the number of components selected.
 
 ```{python}
+#| label: scaling-dim-reduction
 #| warning: false
 #| message: false
-#| echo: true
 
 # select all numeric columns
 num_cols = X_train.select_dtypes(include='number').columns
@@ -219,19 +216,17 @@ To address our research questions on emotion recognition from acoustic features,
 
 For each model, we used the evaluate_model function, which trains the model and reports comprehensive performance metrics. These metrics include overall accuracy, macro-averaged precision, recall, and F1-score, as well as per-class performance for each emotion in the target set. To provide a visual assessment of prediction quality, confusion matrices were generated for all models.
 
-Specifically, we evaluated: - **Random Forest (RF):** An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.
+Specifically, we evaluated:
+-   **Random Forest (RF):** An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.
 
 -   **Support Vector Machine (SVM):** A kernel-based model with RBF kernel, class-weight balancing for mild class imbalance, and probability estimates enabled.
 
 -   **Multilayer Perceptron (MLP):** A neural network with three hidden layers (128, 64, 32 neurons), early stopping, and a 10% validation split to monitor convergence.
 
 ```{python}
+#| label: train-eval
 #| warning: false
 #| message: false
-#| echo: true
-
-# Skip extending y_train - we want to exclude omitted emotions from predictions
-# Use original y_train that only contains target emotions
 
 # Get emotion labels for reporting
 emotion_labels = [emotion for emotion in le.classes_ if emotion in target_emotions]
@@ -365,9 +360,10 @@ Per-emotion analysis revealed nuanced differences among models. For Angry, all m
 Overall, while ensemble methods like Random Forest and kernel-based SVM provide competitive performance for certain classes, the MLP’s ability to model non-linear interactions across multiple dimensions makes it the best-performing approach in this task. These results highlight that neural network-based models may be better suited for emotion recognition from acoustic features, addressing both classification accuracy and balanced performance across all emotions.
 
 ```{python}
+#| label: model-comparison
 #| warning: false
 #| message: false
-#| echo: true
+
 
 print("MODEL COMPARISON SUMMARY")
 print(f"{'='*50}")
