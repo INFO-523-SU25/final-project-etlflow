@@ -1,10 +1,8 @@
 ---
-title: "Acoustic Emotion Classification"
-subtitle: "Optimizing Performance Through Ensemble Methods"
-author: 
-  - name: "Ralph Andrade"
-    affiliations:
-      - name: "College of Information Science, University of Arizona"
+title: "Acoustic Emotion Recognition"
+subtitle: "accuracy of unsupervised methods for recognition emotion from acoustic features"
+author: "Ralph Andrade"
+affiliations: "College of Information Science, University of Arizona"
 description: "An emotion classification project using machine learning to identify four emotions (happy, sad, angry, fear) from speech audio recordings, comparing different algorithms to determine the most effective approach for acoustic emotion recognition."
 format:
   html:
@@ -32,7 +30,7 @@ The project addresses two fundamental questions in acoustic emotion recognition:
 ### Dimensions & Structure:
 
 | **Attribute** | **Details** |
-|------------------------|------------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | **Total Files** | 7,442 audio clips from diverse emotional expressions |
 | **Speakers** | 91 professional actors (48 male, 43 female) |
 | **Age Range** | 20–74 years, providing demographic diversity |
@@ -280,7 +278,7 @@ plt.show()
 
 ### Question 1: Basic Emotion Classification
 
-**Target Variable:** `emotion` (4-class: happy, sad, angry, fear)
+**Target Variable:** `emotion` (4-class: happy, sad, angry, fear, disgust, neutral)
 
 **Feature Extraction Strategy:** The analysis employs five key acoustic feature categories using the librosa library:
 
@@ -297,32 +295,20 @@ plt.show()
 **Model Implementation:** Three complementary algorithms will be implemented and compared:
 
 | **Model** | **Description** |
-|--------------------|----------------------------------------------------|
-| **Logistic Regression** | Provides interpretable baseline with coefficient analysis for feature importance |
+|----------------------|--------------------------------------------------|
 | **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
 | **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
+| **Multi Layer Perceptron** | notable for being able to distinguish data that is not linearly separable |
 
 **Evaluation Framework:** Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.
 
 ### Question 2: Ensemble Learning Effectiveness
 
-**Variables Involved:**
-
--   All audio features from Question 1 (spectral contrast, MFCCs, chroma, ZCR, RMS energy)
--   `individual_predictions`: Predictions from each base model (LR, RF, SVM)
--   `ensemble_prediction`: Combined prediction from ensemble methods
--   `individual_confidence`: Confidence scores (prediction probabilities) from each model
--   `ensemble_confidence`: Combined confidence measures from ensemble approaches
-
 **Analysis Approach:**
 
-**Base Model Training:** Train all three algorithms (Logistic Regression, Random Forest, SVM) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.
-
-**Ensemble Creation:** Implement multiple ensemble strategies including hard voting (majority vote), soft voting (probability-based), and simple probability averaging to combine individual model predictions and assess different aggregation approaches.
+**Base Model Training:** Train all three algorithms (Random Forest, SVM, MLP) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.
 
 **Performance Comparison:** Conduct systematic comparison of individual model accuracy against ensemble methods using cross-validation, statistical significance testing, and detailed performance metrics to quantify improvement gains.
-
-**Feature Analysis:** Investigate which acoustic features contribute most effectively to each algorithm's performance, identifying complementary strengths that ensemble methods can exploit for improved classification accuracy.
 
 ## Technical Implementation
 
@@ -373,7 +359,6 @@ plt.show()
 | `.quarto/` | Quarto's internal folder—automatically created to manage rendering settings and cache. You typically don't touch this. |
 | `_extra/` | Stores supporting materials that aren't part of the main outputs but are useful for context. |
 | `_freeze/` | Keeps locked-in versions of documents to ensure consistency when rebuilding or sharing. |
-| `_site/` | Final output folder generated after rendering; includes the HTML version of your site. |
 | `data/` | Where all the data lives—raw inputs, cleaned datasets, and a README explaining structure and sources. |
 | `images/` | Used for storing visual content like charts, graphs, and illustrations referenced in your `.qmd` files. |
 | `style/` | Contains custom design elements, like SCSS files, that control the look and feel of your site. |
