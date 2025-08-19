@@ -19,20 +19,24 @@ jupyter: python3
 ---
 
 ## Abstract
-This project investigates the fundamental capability of machine learning models to distinguish emotional states through acoustic feature analysis. Using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset), our study focuses on the classification emotions: neutral, happy, sad, angry, fear, disgust. A combination of traditional feature engineering paired with ensemble learning methods forms the basis for developing robust emotion recognition models. We systematically examine and compare the predictive performance of individual algorithms with ensemble and neural network strategies for multi-class emotion recognition.
+
+This study investigates the capability of machine learning models to classify emotional states from acoustic features. Using the CREMA-D (Crowd-Sourced Emotional Multimodal Actors Dataset), we focused on six target emotions: neutral, happy, sad, angry, fear, and disgust. Numerical audio features were extracted via librosa, standardized, and reduced using PCA to retain 98% of variance. We evaluated and compared standalone algorithms (SVM), ensemble methods (Random Forest), and neural networks (MLP) for multi-class emotion recognition. Results indicate that the MLP achieved the highest macro F1-score (0.5534), demonstrating superior ability to capture non-linear patterns and balanced performance across all emotions.
 
 ## Introduction
 
-Building on the challenge of automatic emotion classification, this project leverages the Crowd-Sourced Emotional Multimodal Actors Dataset (CREMA-D), a widely recognized collection of acted speech designed for emotion research. The dataset comprises 7,442 `.wav` clips from 91 actors portraying six basic emotions. Existing research shows that while audio features like MFCCs and spectral properties are often used for emotion detection, there is still no agreement on the best feature selection or model designs, especially in traditional machine learning contexts. (Banerjee, Huang, & Lettiere, n.d.). We transformed raw audio signals into quantitative features using the `librosa` library, as detailed in our [proposal](https://info-523-su25.github.io/final-project-etlflow/proposal.html).
+Automatic emotion classification from speech remains a challenging problem due to the subtlety and variability of acoustic cues. This project leverages the CREMA-D dataset, comprising 7,442 .wav clips from 91 actors portraying six basic emotions. Prior research demonstrates that features such as MFCCs and spectral properties are informative for emotion detection, yet there is no consensus on optimal feature selection or model architecture (Banerjee, Huang, & Lettiere, n.d.).
 
-Project's goal is to explore the effectiveness of unsupervised learning for predicting multi-class emotion targets, aiming to benchmark these results from ensemble strategies against standalone and neural network models. This methodology offers new perspective on the relative utility of unsupervised techniques in speech emotion recognition.
+We transformed raw audio into quantitative features using librosa and applied a standardized preprocessing pipeline. The goal is to assess the effectiveness of both traditional and neural network-based models for multi-class emotion recognition, providing a comparative evaluation of standalone algorithms, ensemble methods, and neural networks.
 
 ## Research Question
+
 -   **Q1. What is the classification accuracy of unsupervised methods for emotion recognition from acoustic features?**
 -   **Q2. How do standalone algorithms, ensemble approaches, and neural networks compare in terms of accuracy, robustness, and computational efficiency for emotion classification from audio?**
 
-# Exploratory Analysis
-## Inital data load & Observations
+## Exploratory Analysis
+
+### Inital data load & Observations
+
 ```{python}
 #| label: dataset
 #| echo: true
@@ -59,16 +63,24 @@ df = pd.read_csv("./data/crema_d.csv", index_col=0)
 # number of variables and observations in the data
 print(f"Total observations: {df.shape[0]}")
 print(f"Number of features: {df.shape[1]}")
+
+# Numeric summary
+print(df.describe())
+
+# missing values in each column
+missing_df = df.isna().sum()
+print("Missing values per column:\n", missing_df)
 ```
 
 ### Target Class Distribution
 
-Since our projects goal is to predict mutiple classes, we need to determine if a class imbalance exists. Our aim for this project is to focus on predicting four (happy, sad, angry, fear) out of the six emotions in the dataset, as we intend to absorb the remainder (neutral , disgust) as part of the traning set.
+We analyzed class distribution across the six emotions (neutral, happy, sad, angry, disgust, and fear). Our analysis showed that the "neutral" class has approximately 14.5% fewer samples than the other classes. Given this mild imbalance, no resampling was performed.
 
 ```{python}
 #| echo: false
 #| warning: false
 #| message: false
+#| echo: true
 
 plt.figure(figsize=(8, 6))
 sns.countplot(data=df, x='emotion', hue='emotion')
@@ -78,36 +90,34 @@ plt.show()
 
 # Show class distribution for all emotions
 emotion_counts = df['emotion'].value_counts()
-print("Class distribution:\n", emotion_counts)
+#print("Class distribution:\n", emotion_counts)
 
 # Focus on the four target emotions
 target_emotions = ['happy', 'sad', 'angry', 'fear', 'neutral','disgust']
 target_counts = df[df['emotion'].isin(target_emotions)]['emotion'].value_counts()
-print("\nTarget emotion counts:\n", target_counts)
+#print("\nTarget emotion counts:\n", target_counts)
 ```
 
-# Data Preprocessing
-## Data Cleaning
-Since the data contains both positive, zero, and negative skew, we are going to use the Yeo Johnson power transformer to make sure features are standardized.
+## Data Preprocessing
+
+### Data Cleaning & Transformation
+
+Data pre-processing included handling missing values, removing irrelevant columns, and transforming numerical features to reduce skewness. The Yeo–Johnson power transformation was applied to achieve more symmetric distributions (skewness \< ±0.5), improving suitability for downstream modeling. The categorical target variable (‘emotion’) was encoded into numerical labels for compatibility with machine learning algorithms.
 
 ```{python}
-#| echo: false
 #| warning: false
 #| message: false
-
-# missing values in each column
-missing_df = df.isna().sum()
-print("Missing values per column:\n", missing_df)
+#| echo: true
 
 # Remove unwanted columns
 df = df.drop(columns=['actor_id', 'sentence', 'intensity','sample_rate'])
 
 #Indentify skew of numeric cols
 num_cols = df.select_dtypes(include='number').columns
-print(num_cols)
+#print(num_cols)
 
 skewness_before = df[num_cols].skew().sort_values(ascending=False)
-print("Before:", skewness_before)
+#print("Before:", skewness_before)
 
 # yeo-johnson power transformer
 yeojt = PowerTransformer(method='yeo-johnson', standardize=True)
@@ -121,7 +131,7 @@ df[num_cols] = df_t
 
 # Get skewness after transformation
 skewness_after = df[num_cols].skew().sort_values(ascending=False)
-print("After:", skewness_after)
+#print("After:", skewness_after)
 
 # Combined before/after skewness chart
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
@@ -147,14 +157,17 @@ le = LabelEncoder()
 df['encoded_emotion'] = le.fit_transform(df['emotion'])
 
 # View mapping
-print(dict(zip(le.classes_, le.transform(le.classes_))))
+#print(dict(zip(le.classes_, le.transform(le.classes_))))
 ```
 
 ### Splitting the dataset
 
-Since we are absorbing neutral and disgust records into the training split, we have split the data into target and omitted data frames. The train test split is performed on the target data frame, while the omitted data frame is concatenated back into the target after the split.
+The data is split using the train_test_split function, with 20% of the data reserved for testing. For the features (X), we drop the target column and its encoded variant, while for the labels (y), we retain only the encoded emotion.
 
 ```{python}
+#| warning: false
+#| message: false
+#| echo: true
 # train/test split for target emotions
 X = df.drop(columns=['emotion','encoded_emotion'])
 y = df['encoded_emotion']
@@ -165,9 +178,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratif
 
 ### Data Scaling and Dimension Reduction
 
-Data is scaled using the standard scaler on all numeric features that are part of the X_train, and X_test split. After scaling, we perform Principal Component Analysis to determine the number of dimensions while retaining 95% variance.
+Before training our models, we applied data scaling and dimensionality reduction to the numeric features. First, we identified all numeric columns in the dataset and applied Standard Scaling to ensure each feature has zero mean and unit variance.
+
+Next, we performed Principal Component Analysis (PCA) to reduce dimensionality while retaining 98% of the variance. PCA transforms the scaled features into a set of orthogonal components, capturing most of the information in fewer dimensions. We evaluated the explained variance ratio for each component and visualized it using a scree plot to confirm the number of components selected.
 
 ```{python}
+#| warning: false
+#| message: false
+#| echo: true
+
 # select all numeric columns
 num_cols = X_train.select_dtypes(include='number').columns
 
@@ -177,7 +196,7 @@ X_train_scaled = scaler.fit_transform(X_train[num_cols])
 X_test_scaled = scaler.transform(X_test[num_cols])
 
 # Apply PCA while retaining 90
-pca = PCA(n_components=.95)
+pca = PCA(n_components=.98)
 X_train_pca = pca.fit_transform(X_train_scaled)
 X_test_pca = pca.transform(X_test_scaled)
 
@@ -193,16 +212,25 @@ plt.ylabel('Variance Explained')
 plt.xticks(range(1, len(explained_variance)+1))
 plt.grid(True)
 plt.show()
-
-# Reapply PCA Components from scree plot
-pca = PCA()
-X_train_pca = pca.fit_transform(X_train_scaled)
-X_test_pca = pca.transform(X_test_scaled)
 ```
 
-### Model Traning and Evalution
+## Model Training and Evaluation
+
+To address our research questions on emotion recognition from acoustic features, we trained and evaluated multiple machine learning models, including standalone algorithms, ensemble methods, and neural networks. The models were trained on the PCA-reduced and standardized feature set to improve convergence, reduce dimensionality, and mitigate potential overfitting.
+
+For each model, we used the evaluate_model function, which trains the model and reports comprehensive performance metrics. These metrics include overall accuracy, macro-averaged precision, recall, and F1-score, as well as per-class performance for each emotion in the target set. To provide a visual assessment of prediction quality, confusion matrices were generated for all models.
+
+Specifically, we evaluated: - **Random Forest (RF):** An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.
+
+-   **Support Vector Machine (SVM):** A kernel-based model with RBF kernel, class-weight balancing for mild class imbalance, and probability estimates enabled.
+
+-   **Multilayer Perceptron (MLP):** A neural network with three hidden layers (128, 64, 32 neurons), early stopping, and a 10% validation split to monitor convergence.
 
 ```{python}
+#| warning: false
+#| message: false
+#| echo: true
+
 # Skip extending y_train - we want to exclude omitted emotions from predictions
 # Use original y_train that only contains target emotions
 
@@ -216,7 +244,6 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name):
     """
     Train and evaluate a model with comprehensive metrics
     """
-    print(f"\n{'='*50}")
     print(f"Training {model_name}")
     print(f"{'='*50}")
     
@@ -281,7 +308,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name):
 # Initialize models
 # random forest
 rf_model = RandomForestClassifier(
-    n_estimators=1000,           # More trees for better performance
+    n_estimators=1000,          # More trees for better performance
     max_depth=15,               # Prevent overfitting while allowing complexity
     min_samples_split=5,        # Require more samples to split
     min_samples_leaf=2,         # Minimum samples in leaf nodes
@@ -304,12 +331,12 @@ svm_model = SVC(
 
 # standard neral network 
 mlp_model = MLPClassifier(
-    hidden_layer_sizes=(128, 64, 32), 
-    max_iter=1000,
-    random_state=42, 
-    early_stopping=True, 
-    validation_fraction=0.1
-    )
+    hidden_layer_sizes=(128, 64, 32), # network
+    max_iter=1000,                    # Maximum iterations                                
+    early_stopping=True,              # Stop when validation score stops improving
+    validation_fraction=0.1,          # validation set
+    random_state=42
+)
 
 # Evaluate ensemble models along with stand alone models
 results = []
@@ -330,8 +357,18 @@ mlp_results = evaluate_model(mlp_model, X_train_pca, X_test_pca,
 results.append(mlp_results)
 ```
 
-### Model Comparision
+## Model Comparision
+
+We compared the performance of three model types—Random Forest, SVM, and a multilayer perceptron (MLP), on the emotion recognition task using macro-averaged metrics and per-emotion performance. Across overall performance metrics, the MLP consistently outperformed both Random Forest and SVM, achieving the highest accuracy (0.5567), macro precision (0.5538), macro recall (0.5574), and macro F1-score (0.5534). This indicates that the neural network is most effective at capturing complex patterns in the PCA-reduced acoustic feature space.
+
+Per-emotion analysis revealed nuanced differences among models. For Angry, all models performed relatively well, with MLP achieving the highest F1-score (0.7374). Disgust and Fear were more challenging emotions, with lower F1-scores overall, though MLP slightly improved performance over other models. For Happy and Neutral, MLP again showed superior F1-scores, particularly in improving recall for the Neutral class (0.5826). Sad emotion classification also favored MLP, demonstrating balanced precision and recall (F1-score 0.5857).
+
+Overall, while ensemble methods like Random Forest and kernel-based SVM provide competitive performance for certain classes, the MLP’s ability to model non-linear interactions across multiple dimensions makes it the best-performing approach in this task. These results highlight that neural network-based models may be better suited for emotion recognition from acoustic features, addressing both classification accuracy and balanced performance across all emotions.
+
 ```{python}
+#| warning: false
+#| message: false
+#| echo: true
 
 print("MODEL COMPARISON SUMMARY")
 print(f"{'='*50}")
@@ -406,3 +443,9 @@ for emotion in target_names:
     for model_name, metrics in emotion_performance[emotion].items():
         print(f"{model_name:<15} {metrics['precision']:<10.4f} {metrics['recall']:<10.4f} {metrics['f1_score']:<10.4f}")
 ```
+
+## Conclusion
+
+This study investigated the capability of machine learning models to classify emotional states from acoustic features using the CREMA-D dataset. Across multiple approaches including Random Forest, SVM, and a multilayer perceptron, the MLP consistently demonstrated superior performance in both overall accuracy and per-emotion metrics, highlighting its ability to capture complex nonlinear patterns in the PCA-reduced feature space. While traditional ensemble and kernel based methods provided competitive results for certain emotions, neural networks offered the most balanced performance across all classes, particularly for challenging emotions such as Disgust, Fear, and Neutral.
+
+These findings suggest that for multi-class emotion recognition from audio, neural networks are better suited to leverage nuanced acoustic features compared to standalone or ensemble methods. Future work could explore integrating temporal modeling with recurrent neural networks or transformer based architectures, combining audio and visual modalities, or experimenting with advanced feature extraction methods to further improve classification accuracy and robustness.
