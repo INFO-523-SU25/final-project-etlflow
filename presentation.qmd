@@ -1,15 +1,16 @@
 ---
-title: "Acoustic Emotion Recognition"
-subtitle: "accuracy of unsupervised methods for recognition emotion from acoustic features"
+title: "Acoustic Emotion Recognition" 
 author: "Ralph Andrade"
 title-slide-attributes:
   data-background-image: images/charts/abstract-acoustics.png
   data-background-size: stretch
-  data-background-opacity: "0.5"
+  data-background-opacity: "0.85"
   data-slide-number: none
+  class: title-slide
 format:
   revealjs:
     theme:  ['style/customtheming.scss']
+    css: style/custom.css
     footer: "INFO 523 Final Project | Ralph Andrade"
     transition: fade
     code-tools: true
@@ -138,29 +139,284 @@ print("Numeric Description:\n", df.describe())
 
 # Model Comparison
 
-## Model Performance
-
-::: r-fit-text
-| Model | Accuracy | Precision | Recall | F1-Score |
-|-------|----------|-----------|--------|----------|
-| RF    | 0.52     | 0.51      | 0.515  | 0.512    |
-| SVM   | 0.49     | 0.48      | 0.487  | 0.482    |
-| MLP   | 0.557    | 0.554     | 0.557  | 0.553    |
-:::
+## Model Comparison Summary
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Model</th>
+    <th>Accuracy</th>
+    <th>Precision*</th>
+    <th>Recall*</th>
+    <th>F1-Score*</th>
+  </tr>
+  <tr>
+    <td>RF</td>
+    <td>0.5124</td>
+    <td>0.5045</td>
+    <td>0.5121</td>
+    <td>0.5014</td>
+  </tr>
+  <tr>
+    <td>SVM</td>
+    <td>0.5285</td>
+    <td>0.5258</td>
+    <td>0.5280</td>
+    <td>0.5256</td>
+  </tr>
+  <tr>
+    <td>MLP</td>
+    <td>0.5567</td>
+    <td>0.5538</td>
+    <td>0.5574</td>
+    <td>0.5534</td>
+  </tr>
+</table>
+`*` macro
 
 ## Model Metric Comparison
 
 ![Model Metric (Accuracy, Precision, Recall, F1-Score) Comparison](images/charts/7-Model-Comparision.png){fig-align="left"}
 
-# Model Prediction
+# Model Prediction & Performance
+
+## Random Forest Overall Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Metric</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Accuracy</td>
+    <td>0.5104</td>
+  </tr>
+  <tr>
+    <td>Macro Precision</td>
+    <td>0.5012</td>
+  </tr>
+  <tr>
+    <td>Macro Recall</td>
+    <td>0.5104</td>
+  </tr>
+  <tr>
+    <td>Macro F1-Score</td>
+    <td>0.4990</td>
+  </tr>
+</table>
+
+## Random Forest Per-Class Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Emotion</th>
+    <th>Precision</th>
+    <th>Recall</th>
+    <th>F1-Score</th>
+    <th>Support</th>
+  </tr>
+  <tr>
+    <td>angry</td>
+    <td>0.5947</td>
+    <td>0.7913</td>
+    <td>0.6791</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>disgust</td>
+    <td>0.4701</td>
+    <td>0.4331</td>
+    <td>0.4508</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>fear</td>
+    <td>0.4615</td>
+    <td>0.2835</td>
+    <td>0.3512</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>happy</td>
+    <td>0.5000</td>
+    <td>0.4510</td>
+    <td>0.4742</td>
+    <td>255</td>
+  </tr>
+  <tr>
+    <td>neutral</td>
+    <td>0.4587</td>
+    <td>0.5092</td>
+    <td>0.4826</td>
+    <td>218</td>
+  </tr>
+  <tr>
+    <td>sad</td>
+    <td>0.5225</td>
+    <td>0.5945</td>
+    <td>0.5562</td>
+    <td>254</td>
+  </tr>
+</table>
 
 ## Random Forest Predictions
 
 ![Random Forest; Confusion Matrix](images/charts/4-RF-CM.png){fig-align="left"}
 
+## SVM Overall Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Metric</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Accuracy</td>
+    <td>0.5285</td>
+  </tr>
+  <tr>
+    <td>Macro Precision</td>
+    <td>0.5258</td>
+  </tr>
+  <tr>
+    <td>Macro Recall</td>
+    <td>0.5280</td>
+  </tr>
+  <tr>
+    <td>Macro F1-Score</td>
+    <td>0.5256</td>
+  </tr>
+</table>
+
+## SVM Per-Class Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Emotion</th>
+    <th>Precision</th>
+    <th>Recall</th>
+    <th>F1-Score</th>
+    <th>Support</th>
+  </tr>
+  <tr>
+    <td>angry</td>
+    <td>0.6541</td>
+    <td>0.7520</td>
+    <td>0.6996</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>disgust</td>
+    <td>0.4960</td>
+    <td>0.4921</td>
+    <td>0.4941</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>fear</td>
+    <td>0.4478</td>
+    <td>0.4724</td>
+    <td>0.4598</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>happy</td>
+    <td>0.5152</td>
+    <td>0.4667</td>
+    <td>0.4897</td>
+    <td>255</td>
+  </tr>
+  <tr>
+    <td>neutral</td>
+    <td>0.4846</td>
+    <td>0.5046</td>
+    <td>0.4944</td>
+    <td>218</td>
+  </tr>
+  <tr>
+    <td>sad</td>
+    <td>0.5571</td>
+    <td>0.4803</td>
+    <td>0.5159</td>
+    <td>254</td>
+  </tr>
+</table>
+
+
 ## Support Vector Machine Predictions
 
 ![Support Vector Machine; Confusion Matrix](images/charts/5-SVM-CM.png){fig-align="left"}
+
+## MLP (Neural Net) Overall Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Metric</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Accuracy</td>
+    <td>0.5567</td>
+  </tr>
+  <tr>
+    <td>Macro Precision</td>
+    <td>0.5538</td>
+  </tr>
+  <tr>
+    <td>Macro Recall</td>
+    <td>0.5574</td>
+  </tr>
+  <tr>
+    <td>Macro F1-Score</td>
+    <td>0.5534</td>
+  </tr>
+</table>
+
+## MLP (Neural Net) Per-Class Performance
+<table border="1" cellpadding="6" cellspacing="0">
+  <tr>
+    <th>Emotion</th>
+    <th>Precision</th>
+    <th>Recall</th>
+    <th>F1-Score</th>
+    <th>Support</th>
+  </tr>
+  <tr>
+    <td>angry</td>
+    <td>0.6996</td>
+    <td>0.7795</td>
+    <td>0.7374</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>disgust</td>
+    <td>0.5205</td>
+    <td>0.4488</td>
+    <td>0.4820</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>fear</td>
+    <td>0.4845</td>
+    <td>0.4921</td>
+    <td>0.4883</td>
+    <td>254</td>
+  </tr>
+  <tr>
+    <td>happy</td>
+    <td>0.5463</td>
+    <td>0.4627</td>
+    <td>0.5011</td>
+    <td>255</td>
+  </tr>
+  <tr>
+    <td>neutral</td>
+    <td>0.4792</td>
+    <td>0.5826</td>
+    <td>0.5259</td>
+    <td>218</td>
+  </tr>
+  <tr>
+    <td>sad</td>
+    <td>0.5927</td>
+    <td>0.5787</td>
+    <td>0.5857</td>
+    <td>254</td>
+  </tr>
+</table>
 
 ## Multi Layer Perceptron Predictions
 
@@ -168,8 +424,13 @@ print("Numeric Description:\n", df.describe())
 
 # Conclusion
 
-## Summary
+## Key Findings
+- MLP outperformed other approaches in both overall accuracy and per-emotion metrics
+- Neural networks showed stronger ability to capture complex, non-linear patterns
+- Delivered the most balanced performance across all classes, especially for difficult emotions (Disgust, Fear, Neutral)
 
--   MLP is the best-performing model for multi-class emotion recognition
--   Neural networks capture complex, non-linear patterns better than traditional or ensemble methods
--   Future Work: temporal modeling, multimodal integration, advanced feature extraction
+## Futuer Direction
+- Explore temporal modeling (RNNs, Transformers) to capture sequence information
+- Integrate multi-modal inputs (audio + visual features)
+- Experiment with advanced feature extraction beyond PCA
+- Aim to improve classification accuracy and robustness in real-world scenarios
