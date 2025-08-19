@@ -32,14 +32,14 @@
     "href": "proposal.html#research-questions",
     "title": "Acoustic Emotion Recognition",
     "section": "Research Questions",
-    "text": "Research Questions\n\nQuestion 1: Basic Emotion Classification\nCan we accurately classify four emotions (happy, sad, angry, fear) from audio features using traditional machine learning algorithms? This question investigates the fundamental capability of machine learning models to distinguish emotional states through acoustic analysis. By focusing on four distinct emotions, the study maintains sufficient complexity while ensuring manageable scope for comprehensive analysis.\n\n\nQuestion 2: Ensemble Learning Effectiveness\nCan combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition? This question explores the relationship between emotional expression intensity and model performance, investigating whether stronger emotional expressions are easier to classify and whether audio features can predict when models will be confident in their predictions."
+    "text": "Research Questions\n\nQuestion 1: Basic Emotion Classification\nCan we accurately classify four emotions (happy, sad, angry, fear) from audio features using traditional machine learning algorithms?\n\n\nQuestion 2: Ensemble Learning Effectiveness\nCan combining multiple machine learning algorithms (ensemble methods) significantly improve emotion classification accuracy compared to individual models, and which ensemble strategies work best for acoustic emotion recognition?"
   },
   {
     "objectID": "proposal.html#analysis-plan",
     "href": "proposal.html#analysis-plan",
     "title": "Acoustic Emotion Recognition",
     "section": "Analysis Plan",
-    "text": "Analysis Plan\n\nQuestion 1: Basic Emotion Classification\nTarget Variable: emotion (4-class: happy, sad, angry, fear, disgust, neutral)\nFeature Extraction Strategy: The analysis employs five key acoustic feature categories using the librosa library:\n1. Spectral Contrast: Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions\n2. MFCCs (Mel-frequency cepstral coefficients): Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition\n3. Chroma Features: Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody\n4. Zero-Crossing Rate: Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments\n5. Root Mean Square (RMS) Energy: Measures overall signal energy, correlating with loudness and emotional intensity\nModel Implementation: Three complementary algorithms will be implemented and compared:\n\n\n\n\n\n\n\nModel\nDescription\n\n\n\n\nRandom Forest\nOffers robust performance with built-in feature importance rankings and handling of non-linear relationships\n\n\nSupport Vector Machine\nExcels with high-dimensional feature spaces common in audio analysis\n\n\nMulti Layer Perceptron\nnotable for being able to distinguish data that is not linearly separable\n\n\n\nEvaluation Framework: Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.\n\n\nQuestion 2: Ensemble Learning Effectiveness\nAnalysis Approach:\nBase Model Training: Train all three algorithms (Random Forest, SVM, MLP) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.\nPerformance Comparison: Conduct systematic comparison of individual model accuracy against ensemble methods using cross-validation, statistical significance testing, and detailed performance metrics to quantify improvement gains."
+    "text": "Analysis Plan\n\nQuestion 1: Basic Emotion Classification\nTarget Variable: emotion\nFeature Extraction Strategy: The analysis employs five key acoustic feature categories using the librosa library:\n1. Spectral Contrast: Measures amplitude differences between spectral peaks and valleys, capturing timbral characteristics that distinguish emotional expressions\n2. MFCCs (Mel-frequency cepstral coefficients): Extract 13 coefficients representing the short-term power spectrum, fundamental for speech emotion recognition\n3. Chroma Features: Capture pitch class energy distribution, providing harmonic content information relevant to emotional prosody\n4. Zero-Crossing Rate: Quantifies signal noisiness by measuring zero-axis crossings, distinguishing between voiced and unvoiced speech segments\n5. Root Mean Square (RMS) Energy: Measures overall signal energy, correlating with loudness and emotional intensity\nModel Implementation: Three complementary algorithms will be implemented and compared:\n\n\n\n\n\n\n\nModel\nDescription\n\n\n\n\nRandom Forest\nOffers robust performance with built-in feature importance rankings and handling of non-linear relationships\n\n\nSupport Vector Machine\nExcels with high-dimensional feature spaces common in audio analysis\n\n\nMulti Layer Perceptron\nnotable for being able to distinguish data that is not linearly separable\n\n\n\nEvaluation Framework: Models will be assessed using train/test split methodology with comprehensive metrics including accuracy, precision, recall, and F1-score for each emotion class, providing detailed performance analysis across emotional categories.\n\n\nQuestion 2: Ensemble Learning Effectiveness\nAnalysis Approach:\nBase Model Training: Train all three algorithms (Random Forest, SVM, MLP) separately using identical feature sets and training data, establishing baseline performance metrics for each individual approach.\nPerformance Comparison: Conduct systematic comparison of individual model accuracy against ensemble methods using cross-validation, statistical significance testing, and detailed performance metrics to quantify improvement gains."
   },
   {
     "objectID": "proposal.html#technical-implementation",
@@ -109,7 +109,7 @@
     "href": "index.html#model-training-and-evaluation",
     "title": "Acoustic Emotion Recognition",
     "section": "Model Training and Evaluation",
-    "text": "Model Training and Evaluation\nTo address our research questions on emotion recognition from acoustic features, we trained and evaluated multiple machine learning models, including standalone algorithms, ensemble methods, and neural networks. The models were trained on the PCA-reduced and standardized feature set to improve convergence, reduce dimensionality, and mitigate potential overfitting.\nFor each model, we used the evaluate_model function, which trains the model and reports comprehensive performance metrics. These metrics include overall accuracy, macro-averaged precision, recall, and F1-score, as well as per-class performance for each emotion in the target set. To provide a visual assessment of prediction quality, confusion matrices were generated for all models.\nSpecifically, we evaluated: - Random Forest (RF): An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.\n\nSupport Vector Machine (SVM): A kernel-based model with RBF kernel, class-weight balancing for mild class imbalance, and probability estimates enabled.\nMultilayer Perceptron (MLP): A neural network with three hidden layers (128, 64, 32 neurons), early stopping, and a 10% validation split to monitor convergence.\n\n\n\nTarget emotion label mapping: {np.int64(0): 'angry', np.int64(1): 'disgust', np.int64(2): 'fear', np.int64(3): 'happy', np.int64(4): 'neutral', np.int64(5): 'sad'}\nTraining Random Forest\n==================================================\n\nRandom Forest Overall Performance:\nAccuracy: 0.5124\nMacro Precision: 0.5045\nMacro Recall: 0.5121\nMacro F1-Score: 0.5014\n\nRandom Forest Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6067     0.7835     0.6838     254       \ndisgust    0.4744     0.4370     0.4549     254       \nfear       0.4834     0.2874     0.3605     254       \nhappy      0.4938     0.4667     0.4798     255       \nneutral    0.4519     0.4954     0.4726     218       \nsad        0.5169     0.6024     0.5564     254       \n\n\n\n\n\n\n\n\n\nTraining SVM\n==================================================\n\nSVM Overall Performance:\nAccuracy: 0.5285\nMacro Precision: 0.5258\nMacro Recall: 0.5280\nMacro F1-Score: 0.5256\n\nSVM Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6541     0.7520     0.6996     254       \ndisgust    0.4960     0.4921     0.4941     254       \nfear       0.4478     0.4724     0.4598     254       \nhappy      0.5152     0.4667     0.4897     255       \nneutral    0.4846     0.5046     0.4944     218       \nsad        0.5571     0.4803     0.5159     254       \n\n\n\n\n\n\n\n\n\nTraining MLP(Neural Net)\n==================================================\n\nMLP(Neural Net) Overall Performance:\nAccuracy: 0.5567\nMacro Precision: 0.5538\nMacro Recall: 0.5574\nMacro F1-Score: 0.5534\n\nMLP(Neural Net) Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6996     0.7795     0.7374     254       \ndisgust    0.5205     0.4488     0.4820     254       \nfear       0.4845     0.4921     0.4883     254       \nhappy      0.5463     0.4627     0.5011     255       \nneutral    0.4792     0.5826     0.5259     218       \nsad        0.5927     0.5787     0.5857     254"
+    "text": "Model Training and Evaluation\nTo address our research questions on emotion recognition from acoustic features, we trained and evaluated multiple machine learning models, including standalone algorithms, ensemble methods, and neural networks. The models were trained on the PCA-reduced and standardized feature set to improve convergence, reduce dimensionality, and mitigate potential overfitting.\nFor each model, we used the evaluate_model function, which trains the model and reports comprehensive performance metrics. These metrics include overall accuracy, macro-averaged precision, recall, and F1-score, as well as per-class performance for each emotion in the target set. To provide a visual assessment of prediction quality, confusion matrices were generated for all models.\nSpecifically, we evaluated:\n\nRandom Forest (RF): An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.\nSupport Vector Machine (SVM): A kernel-based model with RBF kernel, class-weight balancing for mild class imbalance, and probability estimates enabled.\nMultilayer Perceptron (MLP): A neural network with three hidden layers (128, 64, 32 neurons), early stopping, and a 10% validation split to monitor convergence.\n\n\n\nTarget emotion label mapping: {np.int64(0): 'angry', np.int64(1): 'disgust', np.int64(2): 'fear', np.int64(3): 'happy', np.int64(4): 'neutral', np.int64(5): 'sad'}\nTraining Random Forest\n==================================================\n\nRandom Forest Overall Performance:\nAccuracy: 0.5124\nMacro Precision: 0.5045\nMacro Recall: 0.5121\nMacro F1-Score: 0.5014\n\nRandom Forest Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6067     0.7835     0.6838     254       \ndisgust    0.4744     0.4370     0.4549     254       \nfear       0.4834     0.2874     0.3605     254       \nhappy      0.4938     0.4667     0.4798     255       \nneutral    0.4519     0.4954     0.4726     218       \nsad        0.5169     0.6024     0.5564     254       \n\n\n\n\n\n\n\n\n\nTraining SVM\n==================================================\n\nSVM Overall Performance:\nAccuracy: 0.5285\nMacro Precision: 0.5258\nMacro Recall: 0.5280\nMacro F1-Score: 0.5256\n\nSVM Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6541     0.7520     0.6996     254       \ndisgust    0.4960     0.4921     0.4941     254       \nfear       0.4478     0.4724     0.4598     254       \nhappy      0.5152     0.4667     0.4897     255       \nneutral    0.4846     0.5046     0.4944     218       \nsad        0.5571     0.4803     0.5159     254       \n\n\n\n\n\n\n\n\n\nTraining MLP(Neural Net)\n==================================================\n\nMLP(Neural Net) Overall Performance:\nAccuracy: 0.5567\nMacro Precision: 0.5538\nMacro Recall: 0.5574\nMacro F1-Score: 0.5534\n\nMLP(Neural Net) Per-Class Performance:\nEmotion    Precision  Recall     F1-Score   Support   \n--------------------------------------------------\nangry      0.6996     0.7795     0.7374     254       \ndisgust    0.5205     0.4488     0.4820     254       \nfear       0.4845     0.4921     0.4883     254       \nhappy      0.5463     0.4627     0.5011     255       \nneutral    0.4792     0.5826     0.5259     218       \nsad        0.5927     0.5787     0.5857     254"
   },
   {
     "objectID": "index.html#model-comparision",
@@ -182,11 +182,11 @@
     "text": "Model Evaulation Function\n\n\n\n\nInputs:\n\nmodel → ML model instance (Random Forest, SVM, MLP)\nX_train, X_test → feature matrices\ny_train, y_test → labels\nmodel_name → string for labeling outputs\n\n\n\n\nOutput:\n\nConsole print of metrics & confusion matrix\nDictionary with overall and per-class performance"
   },
   {
-    "objectID": "presentation.html#model-performance",
-    "href": "presentation.html#model-performance",
+    "objectID": "presentation.html#model-comparison-summary",
+    "href": "presentation.html#model-comparison-summary",
     "title": "Acoustic Emotion Recognition",
-    "section": "Model Performance",
-    "text": "Model Performance\n\n\n\n\nModel\nAccuracy\nPrecision\nRecall\nF1-Score\n\n\n\n\nRF\n0.52\n0.51\n0.515\n0.512\n\n\nSVM\n0.49\n0.48\n0.487\n0.482\n\n\nMLP\n0.557\n0.554\n0.557\n0.553"
+    "section": "Model Comparison Summary",
+    "text": "Model Comparison Summary\n\n\n\nModel\n\n\nAccuracy\n\n\nPrecision*\n\n\nRecall*\n\n\nF1-Score*\n\n\n\n\nRF\n\n\n0.5124\n\n\n0.5045\n\n\n0.5121\n\n\n0.5014\n\n\n\n\nSVM\n\n\n0.5285\n\n\n0.5258\n\n\n0.5280\n\n\n0.5256\n\n\n\n\nMLP\n\n\n0.5567\n\n\n0.5538\n\n\n0.5574\n\n\n0.5534\n\n\n\n* macro"
   },
   {
     "objectID": "presentation.html#model-metric-comparison",
@@ -196,11 +196,39 @@
     "text": "Model Metric Comparison\n\nModel Metric (Accuracy, Precision, Recall, F1-Score) Comparison"
   },
   {
+    "objectID": "presentation.html#random-forest-overall-performance",
+    "href": "presentation.html#random-forest-overall-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "Random Forest Overall Performance",
+    "text": "Random Forest Overall Performance\n\n\n\nMetric\n\n\nValue\n\n\n\n\nAccuracy\n\n\n0.5104\n\n\n\n\nMacro Precision\n\n\n0.5012\n\n\n\n\nMacro Recall\n\n\n0.5104\n\n\n\n\nMacro F1-Score\n\n\n0.4990"
+  },
+  {
+    "objectID": "presentation.html#random-forest-per-class-performance",
+    "href": "presentation.html#random-forest-per-class-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "Random Forest Per-Class Performance",
+    "text": "Random Forest Per-Class Performance\n\n\n\nEmotion\n\n\nPrecision\n\n\nRecall\n\n\nF1-Score\n\n\nSupport\n\n\n\n\nangry\n\n\n0.5947\n\n\n0.7913\n\n\n0.6791\n\n\n254\n\n\n\n\ndisgust\n\n\n0.4701\n\n\n0.4331\n\n\n0.4508\n\n\n254\n\n\n\n\nfear\n\n\n0.4615\n\n\n0.2835\n\n\n0.3512\n\n\n254\n\n\n\n\nhappy\n\n\n0.5000\n\n\n0.4510\n\n\n0.4742\n\n\n255\n\n\n\n\nneutral\n\n\n0.4587\n\n\n0.5092\n\n\n0.4826\n\n\n218\n\n\n\n\nsad\n\n\n0.5225\n\n\n0.5945\n\n\n0.5562\n\n\n254"
+  },
+  {
     "objectID": "presentation.html#random-forest-predictions",
     "href": "presentation.html#random-forest-predictions",
     "title": "Acoustic Emotion Recognition",
     "section": "Random Forest Predictions",
     "text": "Random Forest Predictions\n\nRandom Forest; Confusion Matrix"
+  },
+  {
+    "objectID": "presentation.html#svm-overall-performance",
+    "href": "presentation.html#svm-overall-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "SVM Overall Performance",
+    "text": "SVM Overall Performance\n\n\n\nMetric\n\n\nValue\n\n\n\n\nAccuracy\n\n\n0.5285\n\n\n\n\nMacro Precision\n\n\n0.5258\n\n\n\n\nMacro Recall\n\n\n0.5280\n\n\n\n\nMacro F1-Score\n\n\n0.5256"
+  },
+  {
+    "objectID": "presentation.html#svm-per-class-performance",
+    "href": "presentation.html#svm-per-class-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "SVM Per-Class Performance",
+    "text": "SVM Per-Class Performance\n\n\n\nEmotion\n\n\nPrecision\n\n\nRecall\n\n\nF1-Score\n\n\nSupport\n\n\n\n\nangry\n\n\n0.6541\n\n\n0.7520\n\n\n0.6996\n\n\n254\n\n\n\n\ndisgust\n\n\n0.4960\n\n\n0.4921\n\n\n0.4941\n\n\n254\n\n\n\n\nfear\n\n\n0.4478\n\n\n0.4724\n\n\n0.4598\n\n\n254\n\n\n\n\nhappy\n\n\n0.5152\n\n\n0.4667\n\n\n0.4897\n\n\n255\n\n\n\n\nneutral\n\n\n0.4846\n\n\n0.5046\n\n\n0.4944\n\n\n218\n\n\n\n\nsad\n\n\n0.5571\n\n\n0.4803\n\n\n0.5159\n\n\n254"
   },
   {
     "objectID": "presentation.html#support-vector-machine-predictions",
@@ -210,6 +238,20 @@
     "text": "Support Vector Machine Predictions\n\nSupport Vector Machine; Confusion Matrix"
   },
   {
+    "objectID": "presentation.html#mlp-neural-net-overall-performance",
+    "href": "presentation.html#mlp-neural-net-overall-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "MLP (Neural Net) Overall Performance",
+    "text": "MLP (Neural Net) Overall Performance\n\n\n\nMetric\n\n\nValue\n\n\n\n\nAccuracy\n\n\n0.5567\n\n\n\n\nMacro Precision\n\n\n0.5538\n\n\n\n\nMacro Recall\n\n\n0.5574\n\n\n\n\nMacro F1-Score\n\n\n0.5534"
+  },
+  {
+    "objectID": "presentation.html#mlp-neural-net-per-class-performance",
+    "href": "presentation.html#mlp-neural-net-per-class-performance",
+    "title": "Acoustic Emotion Recognition",
+    "section": "MLP (Neural Net) Per-Class Performance",
+    "text": "MLP (Neural Net) Per-Class Performance\n\n\n\nEmotion\n\n\nPrecision\n\n\nRecall\n\n\nF1-Score\n\n\nSupport\n\n\n\n\nangry\n\n\n0.6996\n\n\n0.7795\n\n\n0.7374\n\n\n254\n\n\n\n\ndisgust\n\n\n0.5205\n\n\n0.4488\n\n\n0.4820\n\n\n254\n\n\n\n\nfear\n\n\n0.4845\n\n\n0.4921\n\n\n0.4883\n\n\n254\n\n\n\n\nhappy\n\n\n0.5463\n\n\n0.4627\n\n\n0.5011\n\n\n255\n\n\n\n\nneutral\n\n\n0.4792\n\n\n0.5826\n\n\n0.5259\n\n\n218\n\n\n\n\nsad\n\n\n0.5927\n\n\n0.5787\n\n\n0.5857\n\n\n254"
+  },
+  {
     "objectID": "presentation.html#multi-layer-perceptron-predictions",
     "href": "presentation.html#multi-layer-perceptron-predictions",
     "title": "Acoustic Emotion Recognition",
@@ -217,17 +259,24 @@
     "text": "Multi Layer Perceptron Predictions\n\nMulti Layer Perceptron; Confusion Matrix"
   },
   {
-    "objectID": "presentation.html#summary",
-    "href": "presentation.html#summary",
+    "objectID": "presentation.html#key-findings",
+    "href": "presentation.html#key-findings",
     "title": "Acoustic Emotion Recognition",
-    "section": "Summary",
-    "text": "Summary\n\nMLP is the best-performing model for multi-class emotion recognition\nNeural networks capture complex, non-linear patterns better than traditional or ensemble methods\nFuture Work: temporal modeling, multimodal integration, advanced feature extraction"
+    "section": "Key Findings",
+    "text": "Key Findings\n\nMLP outperformed other approaches in both overall accuracy and per-emotion metrics\nNeural networks showed stronger ability to capture complex, non-linear patterns\nDelivered the most balanced performance across all classes, especially for difficult emotions (Disgust, Fear, Neutral)"
+  },
+  {
+    "objectID": "presentation.html#futuer-direction",
+    "href": "presentation.html#futuer-direction",
+    "title": "Acoustic Emotion Recognition",
+    "section": "Futuer Direction",
+    "text": "Futuer Direction\n\nExplore temporal modeling (RNNs, Transformers) to capture sequence information\nIntegrate multi-modal inputs (audio + visual features)\nExperiment with advanced feature extraction beyond PCA\nAim to improve classification accuracy and robustness in real-world scenarios"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "Acoustic Emotion Classification: Optimizing Performance Through Ensemble Methods",
+    "title": "Acoustic Emotion Recognition",
     "section": "",
-    "text": "This project was developed by Ralph Andrade For INFO 523 - Data Mining and Discovery at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nRalph Andrade: 2027, MS Data Science"
+    "text": "This project was developed by Ralph Andrade For INFO 523 - Data Mining and Discovery at the University of Arizona, taught by Dr. Greg Chism."
   }
 ]
