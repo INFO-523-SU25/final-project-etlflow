@@ -70,6 +70,13 @@
     "text": "Project Structure\n\n\n\n\n\n\n\nFolder / File Name\nDescription\n\n\n\n\n.quarto/\nQuarto’s internal folder—automatically created to manage rendering settings and cache. You typically don’t touch this.\n\n\n_extra/\nStores supporting materials that aren’t part of the main outputs but are useful for context.\n\n\n_freeze/\nKeeps locked-in versions of documents to ensure consistency when rebuilding or sharing.\n\n\ndata/\nWhere all the data lives—raw inputs, cleaned datasets, and a README explaining structure and sources.\n\n\nimages/\nUsed for storing visual content like charts, graphs, and illustrations referenced in your .qmd files.\n\n\nstyle/\nContains custom design elements, like SCSS files, that control the look and feel of your site.\n\n\nindex.qmd\nActs as the homepage, giving a snapshot of what the project is about.\n\n\nabout.qmd\nGives extra context—background info, author bio, or detailed project narrative.\n\n\nproposal.qmd\nThe full research plan: includes goals, methods, schedule, and how everything is structured.\n\n\npresentation.qmd\nSlide deck made with Quarto to highlight the most important insights from your project."
   },
   {
+    "objectID": "proposal.html#work-cited",
+    "href": "proposal.html#work-cited",
+    "title": "Acoustic Emotion Recognition",
+    "section": "Work Cited",
+    "text": "Work Cited\nBanerjee, Gaurab, et al. Understanding Emotion Classification in Audio Data Stanford CS224N Custom Project.\nLivingstone, Steven R., and Frank A. Russo. “The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS): A Dynamic, Multimodal Set of Facial and Vocal Expressions in North American English.” PLOS ONE, vol. 13, no. 5, 16 May 2018, p. e0196391, www.kaggle.com/datasets/uwrfkaggler/ravdess-emotional-speech-audio, https://doi.org/10.1371/journal.pone.0196391. Accessed 4 Aug. 2025.\nLok, Eu Jin. “CREMA-D.” Kaggle.com, 2019, www.kaggle.com/datasets/ejlok1/cremad. Accessed 4 Aug. 2025.\nMoataz El Ayadi, et al. “Survey on Speech Emotion Recognition: Features, Classification Schemes, and Databases.” Pattern Recognition, vol. 44, no. 3, 14 Oct. 2010, pp. 572–587, ui.adsabs.harvard.edu/abs/2011PatRe..44..572E/abstract, https://doi.org/10.1016/j.patcog.2010.09.020. Accessed 19 Aug. 2025."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Acoustic Emotion Recognition",
@@ -131,6 +138,13 @@
     "title": "Acoustic Emotion Recognition",
     "section": "Conclusion",
     "text": "Conclusion\nThis study investigated the capability of machine learning models to classify emotional states from acoustic features using the CREMA-D dataset. Across multiple approaches including Random Forest, SVM, and a multilayer perceptron, the MLP consistently demonstrated superior performance in both overall accuracy and per-emotion metrics, highlighting its ability to capture complex nonlinear patterns in the PCA-reduced feature space. While traditional ensemble and kernel based methods provided competitive results for certain emotions, neural networks offered the most balanced performance across all classes, particularly for challenging emotions such as Disgust, Fear, and Neutral.\nThese findings suggest that for multi-class emotion recognition from audio, neural networks are better suited to leverage nuanced acoustic features compared to standalone or ensemble methods. Future work could explore integrating temporal modeling with recurrent neural networks or transformer based architectures, combining audio and visual modalities, or experimenting with advanced feature extraction methods to further improve classification accuracy and robustness."
+  },
+  {
+    "objectID": "index.html#work-cited",
+    "href": "index.html#work-cited",
+    "title": "Acoustic Emotion Recognition",
+    "section": "Work Cited",
+    "text": "Work Cited\nBanerjee, Gaurab, et al. Understanding Emotion Classification in Audio Data Stanford CS224N Custom Project.\nLivingstone, Steven R., and Frank A. Russo. “The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS): A Dynamic, Multimodal Set of Facial and Vocal Expressions in North American English.” PLOS ONE, vol. 13, no. 5, 16 May 2018, p. e0196391, www.kaggle.com/datasets/uwrfkaggler/ravdess-emotional-speech-audio, https://doi.org/10.1371/journal.pone.0196391. Accessed 4 Aug. 2025.\nLok, Eu Jin. “CREMA-D.” Kaggle.com, 2019, www.kaggle.com/datasets/ejlok1/cremad. Accessed 4 Aug. 2025.\nMoataz El Ayadi, et al. “Survey on Speech Emotion Recognition: Features, Classification Schemes, and Databases.” Pattern Recognition, vol. 44, no. 3, 14 Oct. 2010, pp. 572–587, ui.adsabs.harvard.edu/abs/2011PatRe..44..572E/abstract, https://doi.org/10.1016/j.patcog.2010.09.020. Accessed 19 Aug. 2025."
   },
   {
     "objectID": "presentation.html#abstract",
