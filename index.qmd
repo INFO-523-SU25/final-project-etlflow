@@ -77,7 +77,6 @@ print("Missing values per column:\n", missing_df)
 We analyzed class distribution across the six emotions (neutral, happy, sad, angry, disgust, and fear). Our analysis showed that the "neutral" class has approximately 14.5% fewer samples than the other classes. Given this mild imbalance, no resampling was performed.
 
 ```{python}
-#| echo: false
 #| warning: false
 #| message: false
 #| echo: true
