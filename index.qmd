@@ -215,7 +215,7 @@ To address our research questions on emotion recognition from acoustic features,
 
 For each model, we used the evaluate_model function, which trains the model and reports comprehensive performance metrics. These metrics include overall accuracy, macro-averaged precision, recall, and F1-score, as well as per-class performance for each emotion in the target set. To provide a visual assessment of prediction quality, confusion matrices were generated for all models.
 
-Specifically, we evaluated: 
+Specifically, we evaluated:
 
 -   **Random Forest (RF):** An ensemble method configured with 1000 trees, maximum depth of 15, and out-of-bag scoring to provide robust predictions while controlling for overfitting.
 
@@ -444,3 +444,13 @@ for emotion in target_names:
 This study investigated the capability of machine learning models to classify emotional states from acoustic features using the CREMA-D dataset. Across multiple approaches including Random Forest, SVM, and a multilayer perceptron, the MLP consistently demonstrated superior performance in both overall accuracy and per-emotion metrics, highlighting its ability to capture complex nonlinear patterns in the PCA-reduced feature space. While traditional ensemble and kernel based methods provided competitive results for certain emotions, neural networks offered the most balanced performance across all classes, particularly for challenging emotions such as Disgust, Fear, and Neutral.
 
 These findings suggest that for multi-class emotion recognition from audio, neural networks are better suited to leverage nuanced acoustic features compared to standalone or ensemble methods. Future work could explore integrating temporal modeling with recurrent neural networks or transformer based architectures, combining audio and visual modalities, or experimenting with advanced feature extraction methods to further improve classification accuracy and robustness.
+
+## Work Cited
+
+Banerjee, Gaurab, et al. *Understanding Emotion Classification in Audio Data Stanford CS224N Custom Project*.
+
+Livingstone, Steven R., and Frank A. Russo. “The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS): A Dynamic, Multimodal Set of Facial and Vocal Expressions in North American English.” *PLOS ONE*, vol. 13, no. 5, 16 May 2018, p. e0196391, www.kaggle.com/datasets/uwrfkaggler/ravdess-emotional-speech-audio, https://doi.org/10.1371/journal.pone.0196391. Accessed 4 Aug. 2025.
+
+Lok, Eu Jin. “CREMA-D.” *Kaggle.com*, 2019, www.kaggle.com/datasets/ejlok1/cremad. Accessed 4 Aug. 2025.
+
+Moataz El Ayadi, et al. “Survey on Speech Emotion Recognition: Features, Classification Schemes, and Databases.” *Pattern Recognition*, vol. 44, no. 3, 14 Oct. 2010, pp. 572–587, ui.adsabs.harvard.edu/abs/2011PatRe..44..572E/abstract, https://doi.org/10.1016/j.patcog.2010.09.020. Accessed 19 Aug. 2025.

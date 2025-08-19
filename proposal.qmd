@@ -298,7 +298,7 @@ plt.show()
 **Model Implementation:** Three complementary algorithms will be implemented and compared:
 
 | **Model** | **Description** |
-|-------------------------|----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | **Random Forest** | Offers robust performance with built-in feature importance rankings and handling of non-linear relationships |
 | **Support Vector Machine** | Excels with high-dimensional feature spaces common in audio analysis |
 | **Multi Layer Perceptron** | notable for being able to distinguish data that is not linearly separable |
@@ -370,4 +370,12 @@ plt.show()
 | `proposal.qmd` | The full research plan: includes goals, methods, schedule, and how everything is structured. |
 | `presentation.qmd` | Slide deck made with Quarto to highlight the most important insights from your project. |
 
-##
+## Work Cited
+
+Banerjee, Gaurab, et al. *Understanding Emotion Classification in Audio Data Stanford CS224N Custom Project*.
+
+Livingstone, Steven R., and Frank A. Russo. “The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS): A Dynamic, Multimodal Set of Facial and Vocal Expressions in North American English.” *PLOS ONE*, vol. 13, no. 5, 16 May 2018, p. e0196391, www.kaggle.com/datasets/uwrfkaggler/ravdess-emotional-speech-audio, https://doi.org/10.1371/journal.pone.0196391. Accessed 4 Aug. 2025.
+
+Lok, Eu Jin. “CREMA-D.” *Kaggle.com*, 2019, www.kaggle.com/datasets/ejlok1/cremad. Accessed 4 Aug. 2025.
+
+Moataz El Ayadi, et al. “Survey on Speech Emotion Recognition: Features, Classification Schemes, and Databases.” *Pattern Recognition*, vol. 44, no. 3, 14 Oct. 2010, pp. 572–587, ui.adsabs.harvard.edu/abs/2011PatRe..44..572E/abstract, https://doi.org/10.1016/j.patcog.2010.09.020. Accessed 19 Aug. 2025.
