@@ -22,10 +22,8 @@ format:
     theme:
       light: 
         - flatly
-        - style/customtheming.scss
       dark: 
         - darkly
-        - style/customtheming.scss
     toc: true
 
 execute:
